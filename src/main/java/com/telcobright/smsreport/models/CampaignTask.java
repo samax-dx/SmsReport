@@ -71,4 +71,7 @@ public class CampaignTask {
 
     @Column(name = "last_updated_stamp")
     public LocalDateTime lastUpdatedStamp;
+
+    @Column(name = "last_updated_tx_stamp")
+    public LocalDateTime lastUpdatedTxStamp;
 }
