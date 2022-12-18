@@ -1,4 +1,4 @@
-package com.telcobright.smsreport;
+package com.telcobright.SmsReport;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

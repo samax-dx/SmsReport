@@ -4,7 +4,7 @@
     <persistence-units>
       <persistence-unit name="Default">
         <packages>
-          <package value="com.telcobright.smsreport" />
+          <package value="com.telcobright.SmsReport" />
         </packages>
       </persistence-unit>
     </persistence-units>

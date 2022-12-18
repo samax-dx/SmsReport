@@ -1,18 +1,12 @@
-package com.telcobright.smsreport.repositories;
+package com.telcobright.SmsReport.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.Id;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 

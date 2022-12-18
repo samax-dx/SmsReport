@@ -1,27 +1,18 @@
-package com.telcobright.smsreport.controller;
+package com.telcobright.SmsReport.controller;
 
-import com.telcobright.smsreport.repositories.DashBoardRepository;
-import org.hibernate.cache.spi.support.AbstractReadWriteAccess;
+import com.telcobright.SmsReport.repositories.DashBoardRepository;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/DashBoard")

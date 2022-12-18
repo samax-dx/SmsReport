@@ -1,8 +1,8 @@
-package com.telcobright.smsreport.controller;
+package com.telcobright.SmsReport.controller;
 
-import com.telcobright.smsreport.Util.AuthToken;
-import com.telcobright.smsreport.models.ContactGroup;
-import com.telcobright.smsreport.repositories.ContactGroupRepository;
+import com.telcobright.SmsReport.Util.AuthToken;
+import com.telcobright.SmsReport.models.ContactGroup;
+import com.telcobright.SmsReport.repositories.ContactGroupRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;

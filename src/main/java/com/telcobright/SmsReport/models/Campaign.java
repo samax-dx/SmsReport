@@ -1,9 +1,8 @@
-package com.telcobright.smsreport.models;
+package com.telcobright.SmsReport.models;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 import java.time.LocalDateTime;
 
 @Entity(name = "campaign")

@@ -1,4 +1,4 @@
-package com.telcobright.smsreport.models;
+package com.telcobright.SmsReport.models;
 
 import java.io.Serializable;
 
