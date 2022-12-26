@@ -1,27 +1,18 @@
 package com.telcobright.smsreport.controller;
 
 import com.telcobright.smsreport.repositories.DashBoardRepository;
-import org.hibernate.cache.spi.support.AbstractReadWriteAccess;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/DashBoard")
@@ -44,7 +35,7 @@ public class DashBoardController {
         LocalDateTime weekStartDate = LocalDateTime.now().with(LocalTime.of(23,59,0));
         LocalDateTime weekEndDate = LocalDateTime.now().minusDays(7).with(LocalTime.of(0,0,0));
         try {
-            int weekCampaignCount = dashBoardRepository.weekCampaignCountById(partyId,weekStartDate,weekEndDate);
+            int weekCampaignCount = dashBoardRepository.weekCampaignCountByPartyId(partyId,weekStartDate,weekEndDate);
             return weekCampaignCount;
         }
         catch (Exception e){
@@ -52,6 +43,27 @@ public class DashBoardController {
         }
 
     }
+
+    @CrossOrigin(origins = "*")
+    @RequestMapping(
+            value = "/weekCampaignCountAdmin",
+            method = RequestMethod.POST,
+            consumes = {"application/json"},
+            produces = {"application/json"}
+    )
+    public Object weekCampaignCountAdmin(@RequestBody Map<String, Object> payload) {
+        LocalDateTime weekStartDate = LocalDateTime.now().with(LocalTime.of(23,59,0));
+        LocalDateTime weekEndDate = LocalDateTime.now().minusDays(7).with(LocalTime.of(0,0,0));
+        try {
+            int weekCampaignCountAdmin = dashBoardRepository.weekCampaignCount(weekStartDate,weekEndDate);
+            return weekCampaignCountAdmin;
+        }
+        catch (Exception e){
+            return e;
+        }
+
+    }
+
 
     @CrossOrigin(origins = "*")
     @RequestMapping(
@@ -73,6 +85,68 @@ public class DashBoardController {
         }
 
     }
+
+    @CrossOrigin(origins = "*")
+    @RequestMapping(
+            value = "/todayCampaignCountAdmin",
+            method = RequestMethod.POST,
+            consumes = {"application/json"},
+            produces = {"application/json"}
+    )
+    public Object todayCampaignCountAdmin(@RequestBody Map<String, Object> payload) {
+        LocalDateTime startDate = LocalDateTime.now().with(LocalTime.of(0,0,0));
+        LocalDateTime endDate = LocalDateTime.now().plusDays(1).with(LocalTime.of(0,0,0));
+        try {
+            int todayCampaignCountAdmin = dashBoardRepository.todaysCampaignCount(startDate,endDate);
+            return todayCampaignCountAdmin;
+        }
+        catch (Exception e){
+            return e;
+        }
+
+    }
+
+    @CrossOrigin(origins = "*")
+    @RequestMapping(
+            value = "/rtCampaignCount",
+            method = RequestMethod.POST,
+            consumes = {"application/json"},
+            produces = {"application/json"}
+    )
+    public Object rtCampaignCount(@RequestBody Map<String, Object> payload) {
+        String partyId = payload.get("partyId").toString();
+        LocalDateTime rtStart = LocalDateTime.now();
+        LocalDateTime rtEnd = LocalDateTime.now().minusMinutes(20);
+        try {
+            int rtCampaignCount = dashBoardRepository.rtCampaignCountByPartyId(partyId,rtStart,rtEnd);
+            return rtCampaignCount;
+        }
+        catch (Exception e){
+            return e;
+        }
+
+    }
+
+    @CrossOrigin(origins = "*")
+    @RequestMapping(
+            value = "/rtCampaignCountAdmin",
+            method = RequestMethod.POST,
+            consumes = {"application/json"},
+            produces = {"application/json"}
+    )
+    public Object rtCampaignCountAdmin(@RequestBody Map<String, Object> payload) {
+        LocalDateTime rtStart = LocalDateTime.now();
+        LocalDateTime rtEnd = LocalDateTime.now().minusMinutes(20);
+        try {
+            int rtCampaignCountAdmin = dashBoardRepository.rtCampaignCount(rtStart,rtEnd);
+            return rtCampaignCountAdmin;
+        }
+        catch (Exception e){
+            return e;
+        }
+
+    }
+
     @CrossOrigin(origins = "*")
     @RequestMapping(
             value = "/todayCampaignSuccess",
@@ -85,8 +159,27 @@ public class DashBoardController {
         LocalDateTime startDate = LocalDateTime.now().with(LocalTime.of(0,0,0));
         LocalDateTime endDate = LocalDateTime.now().plusDays(1).with(LocalTime.of(0,0,0));
         try{
-            int todaysTotalSuccessCount = dashBoardRepository.todaysTotalSuccessCountById(partyId,startDate,endDate);
+            int todaysTotalSuccessCount = dashBoardRepository.todaysTotalSuccessCountByPartyId(partyId,startDate,endDate);
             return todaysTotalSuccessCount;
+        }
+        catch (Exception e){
+            return e;
+        }
+    }
+
+    @CrossOrigin(origins = "*")
+    @RequestMapping(
+            value = "/todayCampaignSuccessAdmin",
+            method = RequestMethod.POST,
+            consumes = {"application/json"},
+            produces = {"application/json"}
+    )
+    public Object todaycampaignSuccessAdmin(@RequestBody Map<String, Object> payload) {
+        LocalDateTime startDate = LocalDateTime.now().with(LocalTime.of(0,0,0));
+        LocalDateTime endDate = LocalDateTime.now().plusDays(1).with(LocalTime.of(0,0,0));
+        try{
+            int todaysTotalSuccessCountAdmin = dashBoardRepository.todaysTotalSuccessCount(startDate,endDate);
+            return todaysTotalSuccessCountAdmin;
         }
         catch (Exception e){
             return e;
@@ -105,13 +198,75 @@ public class DashBoardController {
         LocalDateTime weekStartDate = LocalDateTime.now().with(LocalTime.of(23,59,0));
         LocalDateTime weekEndDate = LocalDateTime.now().minusDays(7).with(LocalTime.of(0,0,0));
         try{
-            int weekTotalSuccessCount = dashBoardRepository.weekTotalSuccessCountById(partyId,weekStartDate,weekEndDate);
+            int weekTotalSuccessCount = dashBoardRepository.weekTotalSuccessCountByPartyId(partyId,weekStartDate,weekEndDate);
             return weekTotalSuccessCount;
         }
         catch (Exception e){
             return e;
         }
     }
+
+    @CrossOrigin(origins = "*")
+    @RequestMapping(
+            value = "/weekCampaignSuccessAdmin",
+            method = RequestMethod.POST,
+            consumes = {"application/json"},
+            produces = {"application/json"}
+    )
+
+    public Object weekcampaignSuccessAdmin(@RequestBody Map<String, Object> payload) {
+        LocalDateTime weekStartDate = LocalDateTime.now().with(LocalTime.of(23,59,0));
+        LocalDateTime weekEndDate = LocalDateTime.now().minusDays(7).with(LocalTime.of(0,0,0));
+        try{
+            int weekTotalSuccessCountAdmin = dashBoardRepository.weekTotalSuccessCount(weekStartDate,weekEndDate);
+            return weekTotalSuccessCountAdmin;
+        }
+        catch (Exception e){
+            return e;
+        }
+    }
+
+    @CrossOrigin(origins = "*")
+    @RequestMapping(
+            value = "/rtCampaignSuccess",
+            method = RequestMethod.POST,
+            consumes = {"application/json"},
+            produces = {"application/json"}
+    )
+
+    public Object rtcampaignSuccess(@RequestBody Map<String, Object> payload) {
+        String partyId = payload.get("partyId").toString();
+        LocalDateTime rtStart = LocalDateTime.now();
+        LocalDateTime rtEnd = LocalDateTime.now().minusMinutes(20);
+        try{
+            int rtTotalSuccessCount = dashBoardRepository.rtTotalSuccessCountByPartyId(partyId,rtStart,rtEnd);
+            return rtTotalSuccessCount;
+        }
+        catch (Exception e){
+            return e;
+        }
+    }
+
+    @CrossOrigin(origins = "*")
+    @RequestMapping(
+            value = "/rtCampaignSuccessAdmin",
+            method = RequestMethod.POST,
+            consumes = {"application/json"},
+            produces = {"application/json"}
+    )
+
+    public Object rtcampaignSuccessAdmin(@RequestBody Map<String, Object> payload) {
+        LocalDateTime rtStart = LocalDateTime.now();
+        LocalDateTime rtEnd = LocalDateTime.now().minusMinutes(20);
+        try{
+            int rtTotalSuccessCountAdmin = dashBoardRepository.rtTotalSuccessCount(rtStart,rtEnd);
+            return rtTotalSuccessCountAdmin;
+        }
+        catch (Exception e){
+            return e;
+        }
+    }
+
     @CrossOrigin(origins = "*")
     @RequestMapping(
             value = "/todayTotalTaskCount",
@@ -125,13 +280,34 @@ public class DashBoardController {
         LocalDateTime endDate = LocalDateTime.now().plusDays(1).with(LocalTime.of(0,0,0));
         try{
 
-            int todaysTotalTaskCount = dashBoardRepository.todaysTotalTaskCountById(partyId,startDate,endDate);
+            int todaysTotalTaskCount = dashBoardRepository.todaysTotalTaskCountByPartyId(partyId,startDate,endDate);
             return todaysTotalTaskCount;
         }
         catch (Exception e){
             return e;
         }
     }
+
+    @CrossOrigin(origins = "*")
+    @RequestMapping(
+            value = "/todayTotalTaskCountAdmin",
+            method = RequestMethod.POST,
+            consumes = {"application/json"},
+            produces = {"application/json"}
+    )
+    public Object todayTotalTaskCountAdmin(@RequestBody Map<String, Object> payload) {
+        LocalDateTime startDate = LocalDateTime.now().with(LocalTime.of(0,0,0));
+        LocalDateTime endDate = LocalDateTime.now().plusDays(1).with(LocalTime.of(0,0,0));
+        try{
+
+            int todayTotalTaskCountAdmin = dashBoardRepository.todaysTotalTaskCount(startDate,endDate);
+            return todayTotalTaskCountAdmin;
+        }
+        catch (Exception e){
+            return e;
+        }
+    }
+
     @CrossOrigin(origins = "*")
     @RequestMapping(
             value = "/weekTotalTaskCount",
@@ -145,13 +321,75 @@ public class DashBoardController {
         LocalDateTime weekEndDate = LocalDateTime.now().minusDays(7).with(LocalTime.of(0,0,0));
         try{
 
-            int weekTotalTaskCount = dashBoardRepository.weekTotalTaskCountById(partyId,weekStartDate,weekEndDate);
+            int weekTotalTaskCount = dashBoardRepository.weekTotalTaskCountByPartyId(partyId,weekStartDate,weekEndDate);
             return weekTotalTaskCount;
         }
         catch (Exception e){
             return e;
         }
     }
+
+    @CrossOrigin(origins = "*")
+    @RequestMapping(
+            value = "/weekTotalTaskCountAdmin",
+            method = RequestMethod.POST,
+            consumes = {"application/json"},
+            produces = {"application/json"}
+    )
+    public Object weekTotalTaskCountAdmin(@RequestBody Map<String, Object> payload) {
+        LocalDateTime weekStartDate = LocalDateTime.now().with(LocalTime.of(23,59,0));
+        LocalDateTime weekEndDate = LocalDateTime.now().minusDays(7).with(LocalTime.of(0,0,0));
+        try{
+
+            int weekTotalTaskCountAdmin = dashBoardRepository.weekTotalTaskCount(weekStartDate,weekEndDate);
+            return weekTotalTaskCountAdmin;
+        }
+        catch (Exception e){
+            return e;
+        }
+    }
+
+    @CrossOrigin(origins = "*")
+    @RequestMapping(
+            value = "/rtTotalTaskCount",
+            method = RequestMethod.POST,
+            consumes = {"application/json"},
+            produces = {"application/json"}
+    )
+    public Object rtTotalTaskCount(@RequestBody Map<String, Object> payload) {
+        String partyId = payload.get("partyId").toString();
+        LocalDateTime rtStart = LocalDateTime.now();
+        LocalDateTime rtEnd = LocalDateTime.now().minusMinutes(20);
+        try{
+
+            int rtTotalTaskCount = dashBoardRepository.rtTotalTaskCountByPartyId(partyId,rtStart,rtEnd);
+            return rtTotalTaskCount;
+        }
+        catch (Exception e){
+            return e;
+        }
+    }
+
+    @CrossOrigin(origins = "*")
+    @RequestMapping(
+            value = "/rtTotalTaskCountAdmin",
+            method = RequestMethod.POST,
+            consumes = {"application/json"},
+            produces = {"application/json"}
+    )
+    public Object rtTotalTaskCountAdmin(@RequestBody Map<String, Object> payload) {
+        LocalDateTime rtStart = LocalDateTime.now();
+        LocalDateTime rtEnd = LocalDateTime.now().minusMinutes(20);
+        try{
+
+            int rtTotalTaskCountAdmin = dashBoardRepository.rtTotalTaskCount(rtStart,rtEnd);
+            return rtTotalTaskCountAdmin;
+        }
+        catch (Exception e){
+            return e;
+        }
+    }
+
     @CrossOrigin(origins = "*")
     @RequestMapping(
             value = "/routeDetails",
@@ -161,8 +399,10 @@ public class DashBoardController {
     )
     public Object routeDetails(@RequestBody Map<String, Object> payload) {
         String partyId = payload.get("partyId").toString();
+        LocalDateTime startDate = LocalDateTime.now().with(LocalTime.of(0,0,0));
+        LocalDateTime endDate = LocalDateTime.now().plusDays(1).with(LocalTime.of(0,0,0));
        try {
-           List<Object[]> routeDetails = dashBoardRepository.routeDetails(partyId);
+           List<Object[]> routeDetails = dashBoardRepository.routeDetailsByPartyId(partyId,startDate,endDate);
            List<Map<String, Long>> records = routeDetails.stream().map(row->{
                Map<String,Long> rowAsMap= new HashMap<>();
                rowAsMap.put(row[0]!=null?row[0].toString():"null", (Long) row[1]);
@@ -173,6 +413,30 @@ public class DashBoardController {
        catch (Exception e){
            return e;
        }
+    }
+
+    @CrossOrigin(origins = "*")
+    @RequestMapping(
+            value = "/routeDetailsAdmin",
+            method = RequestMethod.POST,
+            consumes = {"application/json"},
+            produces = {"application/json"}
+    )
+    public Object routeDetailsAdmin(@RequestBody Map<String, Object> payload) {
+        LocalDateTime startDate = LocalDateTime.now().with(LocalTime.of(0,0,0));
+        LocalDateTime endDate = LocalDateTime.now().plusDays(1).with(LocalTime.of(0,0,0));
+        try {
+            List<Object[]> routeDetails = dashBoardRepository.routeDetails(startDate,endDate);
+            List<Map<String, Long>> records = routeDetails.stream().map(row->{
+                Map<String,Long> rowAsMap= new HashMap<>();
+                rowAsMap.put(row[0]!=null?row[0].toString():"null", (Long) row[1]);
+                return rowAsMap;
+            }).collect(Collectors.toList());
+            return records;
+        }
+        catch (Exception e){
+            return e;
+        }
     }
 
     @RequestMapping(
