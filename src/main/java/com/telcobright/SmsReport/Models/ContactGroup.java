@@ -1,4 +1,4 @@
-package com.telcobright.SmsReport.models;
+package com.telcobright.SmsReport.Models;
 
 
 import javax.persistence.Column;

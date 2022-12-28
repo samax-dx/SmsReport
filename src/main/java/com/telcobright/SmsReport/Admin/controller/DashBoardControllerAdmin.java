@@ -1,6 +1,6 @@
-package com.telcobright.smsreport.controller;
+package com.telcobright.SmsReport.Admin.controller;
 
-import com.telcobright.smsreport.repositories.DashBoardRepository;
+import com.telcobright.SmsReport.Admin.repositories.DashBoardRepositoryAdmin;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,11 +15,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/DashBoard")
-public class DashBoardController {
-    final DashBoardRepository dashBoardRepository;
+@RequestMapping("/admin/DashBoard")
+public class DashBoardControllerAdmin {
+    final DashBoardRepositoryAdmin dashBoardRepository;
 
-    public DashBoardController(DashBoardRepository dashBoardRepository) {
+    public DashBoardControllerAdmin(DashBoardRepositoryAdmin dashBoardRepository) {
         this.dashBoardRepository = dashBoardRepository;
     }
 
@@ -106,26 +106,6 @@ public class DashBoardController {
 
     }
 
-    @CrossOrigin(origins = "*")
-    @RequestMapping(
-            value = "/rtCampaignCount",
-            method = RequestMethod.POST,
-            consumes = {"application/json"},
-            produces = {"application/json"}
-    )
-    public Object rtCampaignCount(@RequestBody Map<String, Object> payload) {
-        String partyId = payload.get("partyId").toString();
-        LocalDateTime rtStart = LocalDateTime.now();
-        LocalDateTime rtEnd = LocalDateTime.now().minusMinutes(20);
-        try {
-            int rtCampaignCount = dashBoardRepository.rtCampaignCountByPartyId(partyId,rtStart,rtEnd);
-            return rtCampaignCount;
-        }
-        catch (Exception e){
-            return e;
-        }
-
-    }
 
     @CrossOrigin(origins = "*")
     @RequestMapping(
@@ -226,26 +206,7 @@ public class DashBoardController {
         }
     }
 
-    @CrossOrigin(origins = "*")
-    @RequestMapping(
-            value = "/rtCampaignSuccess",
-            method = RequestMethod.POST,
-            consumes = {"application/json"},
-            produces = {"application/json"}
-    )
 
-    public Object rtcampaignSuccess(@RequestBody Map<String, Object> payload) {
-        String partyId = payload.get("partyId").toString();
-        LocalDateTime rtStart = LocalDateTime.now();
-        LocalDateTime rtEnd = LocalDateTime.now().minusMinutes(20);
-        try{
-            int rtTotalSuccessCount = dashBoardRepository.rtTotalSuccessCountByPartyId(partyId,rtStart,rtEnd);
-            return rtTotalSuccessCount;
-        }
-        catch (Exception e){
-            return e;
-        }
-    }
 
     @CrossOrigin(origins = "*")
     @RequestMapping(
@@ -349,26 +310,7 @@ public class DashBoardController {
         }
     }
 
-    @CrossOrigin(origins = "*")
-    @RequestMapping(
-            value = "/rtTotalTaskCount",
-            method = RequestMethod.POST,
-            consumes = {"application/json"},
-            produces = {"application/json"}
-    )
-    public Object rtTotalTaskCount(@RequestBody Map<String, Object> payload) {
-        String partyId = payload.get("partyId").toString();
-        LocalDateTime rtStart = LocalDateTime.now();
-        LocalDateTime rtEnd = LocalDateTime.now().minusMinutes(20);
-        try{
 
-            int rtTotalTaskCount = dashBoardRepository.rtTotalTaskCountByPartyId(partyId,rtStart,rtEnd);
-            return rtTotalTaskCount;
-        }
-        catch (Exception e){
-            return e;
-        }
-    }
 
     @CrossOrigin(origins = "*")
     @RequestMapping(

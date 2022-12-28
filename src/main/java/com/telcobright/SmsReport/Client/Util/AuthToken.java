@@ -1,4 +1,4 @@
-package com.telcobright.SmsReport.Util;
+package com.telcobright.SmsReport.Client.Util;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;

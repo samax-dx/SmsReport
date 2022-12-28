@@ -1,4 +1,4 @@
-package com.telcobright.SmsReport.repositories;
+package com.telcobright.SmsReport.Client.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,12 +11,12 @@ import java.util.List;
 
 
 @Entity
-class __sms_report__dashboard {
+class __sms_report_client__dashboard {
     @Id
     private Integer id;
 }
 
-public interface DashBoardRepository extends JpaRepository<__sms_report__dashboard, Integer> {
+public interface DashBoardRepositoryClient extends JpaRepository<__sms_report_client__dashboard, Integer> {
 
    @Query("select count(ct) from campaign ct where ct.partyId = ?1 and ct.createdTxStamp>= ?3 and ct.createdTxStamp<= ?2")
    int weekCampaignCountById(@Param("paryId") String partyId, LocalDateTime startDate, LocalDateTime endDate);
@@ -38,6 +38,15 @@ public interface DashBoardRepository extends JpaRepository<__sms_report__dashboa
 
     @Query("select ct.routeId as rId, count(ct) as cnt from campaign_task ct where campaignId in (select c.campaignId as cmpId from campaign c where c.partyId= ?1) and ct.lastUpdatedTxStamp >= ?2 and ct.lastUpdatedTxStamp <= ?3 group by routeId ")
     List<Object[]> routeDetails(@Param("partyId") String partyId, LocalDateTime startDate, LocalDateTime endDate);
+
+    @Query("select count(ct) from campaign ct where ct.partyId = ?1 and ct.createdTxStamp>= ?3 and ct.createdTxStamp<= ?2")
+    int rtCampaignCountByPartyId(@Param("paryId") String partyId, LocalDateTime rtStart, LocalDateTime rtEnd);
+
+    @Query("select count(*) as cnt from campaign_task ct where campaignId in (select c.campaignId as cmpId from campaign c where c.partyId= ?1) and ct.status in ('sent') and ct.lastUpdatedTxStamp >= ?3 and ct.lastUpdatedTxStamp <= ?2")
+    int rtTotalSuccessCountByPartyId(@Param("paryId") String partyId, LocalDateTime rtStart, LocalDateTime rtEnd);
+
+    @Query("select count(*) as cnt from campaign_task ct where campaignId in (select c.campaignId as cmpId from campaign c where c.partyId= ?1) and ct.lastUpdatedTxStamp >= ?3 and ct.lastUpdatedTxStamp <= ?2")
+    int rtTotalTaskCountByPartyId(@Param("paryId") String partyId, LocalDateTime rtStart, LocalDateTime rtEnd);
 
 }
 

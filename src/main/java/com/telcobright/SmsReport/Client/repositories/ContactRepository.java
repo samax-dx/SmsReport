@@ -1,6 +1,6 @@
-package com.telcobright.SmsReport.repositories;
+package com.telcobright.SmsReport.Client.repositories;
 
-import com.telcobright.SmsReport.models.Contact;
+import com.telcobright.SmsReport.Models.Contact;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
