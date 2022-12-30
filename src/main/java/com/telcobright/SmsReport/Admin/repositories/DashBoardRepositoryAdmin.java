@@ -58,6 +58,15 @@ public interface DashBoardRepositoryAdmin extends JpaRepository<__sms_report_adm
     List<Object[]> routeDetailsByPartyId(@Param("partyId") String partyId, LocalDateTime startDate, LocalDateTime endDate);
     @Query("select ct.routeId as rId, count(ct) as cnt from campaign_task ct where ct.lastUpdatedTxStamp >= ?1 and ct.lastUpdatedTxStamp <= ?2 group by routeId ")
     List<Object[]> routeDetails(LocalDateTime startDate, LocalDateTime endDate);
+
+    @Query("select count(*) as cnt from party p")
+    int totalPartyCount();
+    @Query("select count(*) as cnt from party p where p.statusId = 'PARTY_ENABLED'")
+    int totalActivePartyCount();
+
+    @Query("select count(distinct c.partyId) from campaign c where c.campaignId in (select distinct(ct.campaignId) from campaign_task ct where (ct.createdStamp>=?1 and ct.createdStamp<=?2) or (ct.lastUpdatedTxStamp >= ?1 and ct.lastUpdatedTxStamp <= ?2))")
+    int todayActivePartyCount(LocalDateTime startDate, LocalDateTime endDate);
+
 }
 
 

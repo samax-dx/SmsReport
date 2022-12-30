@@ -381,44 +381,60 @@ public class DashBoardControllerAdmin {
         }
     }
 
+    @CrossOrigin(origins = "*")
     @RequestMapping(
-            value = "/smsCount",
+            value = "/totalPartyCountAdmin",
             method = RequestMethod.POST,
             consumes = {"application/json"},
             produces = {"application/json"}
     )
-    public Object smsCount(@RequestBody Map<String, Object> payload) {
-        return 100;
+    public Object totalPartyCountAdmin(@RequestBody Map<String, Object> payload) {
+        try{
+
+            int totalPartyCountAdmin = dashBoardRepository.totalPartyCount();
+            return totalPartyCountAdmin;
+        }
+        catch (Exception e){
+            return e;
+        }
     }
 
+    @CrossOrigin(origins = "*")
     @RequestMapping(
-            value = "/smsSentCount",
+            value = "/totalActivePartyCountAdmin",
             method = RequestMethod.POST,
             consumes = {"application/json"},
             produces = {"application/json"}
     )
-    public Object smsSentCount(@RequestBody Map<String, Object> payload) {
-        return 75;
+    public Object totalActivePartyCountAdmin(@RequestBody Map<String, Object> payload) {
+        try{
+
+            int totalActivePartyCountAdmin = dashBoardRepository.totalActivePartyCount();
+            return totalActivePartyCountAdmin;
+        }
+        catch (Exception e){
+            return e;
+        }
     }
 
+    @CrossOrigin(origins = "*")
     @RequestMapping(
-            value = "/smsFailedCount",
+            value = "/todayActivePartyCountAdmin",
             method = RequestMethod.POST,
             consumes = {"application/json"},
             produces = {"application/json"}
     )
-    public Object smsFailedCount(@RequestBody Map<String, Object> payload) {
-        return 25;
-    }
+    public Object todayActivePartyCountAdmin(@RequestBody Map<String, Object> payload) {
+        LocalDateTime startDate = LocalDateTime.now().with(LocalTime.of(0,0,0));
+        LocalDateTime endDate = LocalDateTime.now().plusDays(1).with(LocalTime.of(0,0,0));
+        try{
 
-    @RequestMapping(
-            value = "/routesDetails",
-            method = RequestMethod.POST,
-            consumes = {"application/json"},
-            produces = {"application/json"}
-    )
-    public Object routesDetails(@RequestBody Map<String, Object> payload) {
-        return 5;
+            int todayActivePartyCountAdmin = dashBoardRepository.todayActivePartyCount(startDate,endDate);
+            return todayActivePartyCountAdmin;
+        }
+        catch (Exception e){
+            return e;
+        }
     }
 
 }

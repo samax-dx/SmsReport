@@ -32,10 +32,8 @@ public class DashBoardControllerClient {
     )
     public Object weekCampaignCount(@RequestBody Map<String, Object> payload) {
         String partyId = payload.get("partyId").toString();
-        LocalDateTime weekStartDate = LocalDateTime.now().with(LocalTime.of(12,0,0));
+        LocalDateTime weekStartDate = LocalDateTime.now().with(LocalTime.of(23,59,0));
         LocalDateTime weekEndDate = LocalDateTime.now().minusDays(7).with(LocalTime.of(0,0,0));
-        LocalDateTime startDate = LocalDateTime.now().with(LocalTime.of(0,0,0));
-        LocalDateTime endDate = LocalDateTime.now().plusDays(1).with(LocalTime.of(0,0,0));
         try {
             int weekCampaignCount = dashBoardRepository.weekCampaignCountById(partyId,weekStartDate,weekEndDate);
             return weekCampaignCount;
@@ -95,7 +93,7 @@ public class DashBoardControllerClient {
 
     public Object weekcampaignSuccess(@RequestBody Map<String, Object> payload) {
         String partyId = payload.get("partyId").toString();
-        LocalDateTime weekStartDate = LocalDateTime.now().with(LocalTime.of(12,0,0));
+        LocalDateTime weekStartDate = LocalDateTime.now().with(LocalTime.of(23,59,0));
         LocalDateTime weekEndDate = LocalDateTime.now().minusDays(7).with(LocalTime.of(0,0,0));
         try{
             int weekTotalSuccessCount = dashBoardRepository.weekTotalSuccessCountById(partyId,weekStartDate,weekEndDate);
@@ -134,7 +132,7 @@ public class DashBoardControllerClient {
     )
     public Object weekTotalTaskCount(@RequestBody Map<String, Object> payload) {
         String partyId = payload.get("partyId").toString();
-        LocalDateTime weekStartDate = LocalDateTime.now().with(LocalTime.of(12,0,0));
+        LocalDateTime weekStartDate = LocalDateTime.now().with(LocalTime.of(23,59,0));
         LocalDateTime weekEndDate = LocalDateTime.now().minusDays(7).with(LocalTime.of(0,0,0));
         try{
 
