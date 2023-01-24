@@ -1,6 +1,8 @@
 package com.telcobright.SmsReport.Admin.controller;
 import com.telcobright.SmsReport.Admin.repositories.AccBalanceRepository;
 import com.telcobright.SmsReport.Models.AccountBalance;
+import com.telcobright.SmsReport.Models.BalanceUpdateError;
+import com.telcobright.SmsReport.Models.BalanceUpdateResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,15 +15,16 @@ import java.util.Map;
 @RestController
 @RequestMapping("/admin/Account")
 public class AccBalanceController {
-
     final AccBalanceRepository accBalanceRepository;
 
     public AccBalanceController (AccBalanceRepository accBalanceRepository){
         this.accBalanceRepository = accBalanceRepository;
     }
+
     private Double getBalanceFromOfbiz(String accountId){
         return 100.3;
     }
+
     @CrossOrigin(origins = "*")
     @RequestMapping(
             value = "/getBalance",
@@ -29,27 +32,23 @@ public class AccBalanceController {
             consumes = {"application/json"},
             produces = {"application/json"}
     )
-    public Object accountBalance(@RequestBody Map<String, Object> payload) {
+    public Object getAccountBalance(@RequestBody Map<String, Object> payload) {
         String accountId = (String) payload.get("accountId");
+
         try {
-            Object accountInfo = accBalanceRepository.getAccountInfo(accountId);
+            AccountBalance accountBalance = accBalanceRepository.getAccountBalanceByAccountId(accountId);
 
-            if (accountInfo==null){
-                AccountBalance accountBalanceInfo = new AccountBalance();
-                accountBalanceInfo.accountId = accountId;
-                accountBalanceInfo.newBalance = getBalanceFromOfbiz(accountId);
-                return accBalanceRepository.save(accountBalanceInfo);
-
-            }else {
-
-                return accountInfo;
+            if (accountBalance == null){
+                accountBalance = new AccountBalance();
+                accountBalance.accountId = accountId;
+                accountBalance.newBalance = getBalanceFromOfbiz(accountId);
+                return accBalanceRepository.save(accountBalance);
             }
 
-        }
-        catch (Exception e){
+            return accountBalance;
+        } catch (Exception e) {
             return e;
         }
-
     }
 
     @CrossOrigin(origins = "*")
@@ -61,28 +60,29 @@ public class AccBalanceController {
     )
     public Object updateAccountBalance(@RequestBody Map<String, Object> payload) {
         String accountId = (String) payload.get("accountId");
-        Double amount = Double.parseDouble((String) payload.get("amount"));
+        double amount = Double.parseDouble((String) payload.get("amount"));
         String txIdentifier = (String) payload.get("txIdentifier");
         String remark = (String) payload.get("remark");
-        try {
-            Map<String,Object> id = new HashMap<>();
-            id.put("accountId",accountId);
-            AccountBalance updatedAccountBalance =  (AccountBalance) accountBalance(id);
 
-            Double prevBalance= updatedAccountBalance.newBalance!=null?updatedAccountBalance.newBalance:Double.parseDouble("0.0");
-            Double newBalance = prevBalance + amount;
-            updatedAccountBalance.prevBalance = prevBalance;
-            updatedAccountBalance.newBalance = newBalance;
-            updatedAccountBalance.txIdentifier = txIdentifier;
-            updatedAccountBalance.remark = remark;
-            return accBalanceRepository.save(updatedAccountBalance);
+        Map<String,Object> accountBalanceQueryData = new HashMap<>();
+        accountBalanceQueryData.put("accountId", accountId);
+        AccountBalance accountBalance =  (AccountBalance) getAccountBalance(accountBalanceQueryData);
 
+        double maxNegativeBalance = 0.0; // retrieve from settings
+        double prevBalance = accountBalance.newBalance;
+        double newBalance = prevBalance + amount; ///if amount type decrease(-5) it won't be less than 0
+
+        if (newBalance < maxNegativeBalance){
+            BalanceUpdateError balanceUpdateError = new BalanceUpdateError("Insufficient Balance", newBalance);
+            return BalanceUpdateResult.fromBalanceUpdateError(balanceUpdateError);
+        } else {
+            accountBalance.prevBalance = prevBalance;
+            accountBalance.newBalance = newBalance;
+            accountBalance.newAmount = amount;
+            accountBalance.txIdentifier = txIdentifier;
+            accountBalance.remark = remark;
+            accBalanceRepository.save(accountBalance);
+            return BalanceUpdateResult.fromAccountBalance(accountBalance);
         }
-        catch (Exception e){
-            return e;
-        }
-
     }
-
-
 }

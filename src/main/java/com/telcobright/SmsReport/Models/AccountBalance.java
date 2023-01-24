@@ -31,5 +31,4 @@ public class AccountBalance {
 
     @Column(name = "tx_identifier")
     public String txIdentifier;
-
 }
