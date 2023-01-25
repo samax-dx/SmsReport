@@ -64,7 +64,7 @@ public class AccBalanceController {
     )
     public Object updateAccountBalance(@RequestBody Map<String, Object> payload) throws Exception {
         String accountId = (String) payload.get("accountId");
-        double amount = Double.parseDouble((String) payload.get("amount"));
+        double amount = Double.parseDouble(String.valueOf(payload.get("amount")));
         String txIdentifier = (String) payload.get("txIdentifier");
         String remark = (String) payload.get("remark");
 
