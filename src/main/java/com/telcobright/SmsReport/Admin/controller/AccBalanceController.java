@@ -33,22 +33,26 @@ public class AccBalanceController {
             produces = {"application/json"}
     )
     public Object getAccountBalance(@RequestBody Map<String, Object> payload) {
-        String accountId = (String) payload.get("accountId");
-
         try {
-            AccountBalance accountBalance = accBalanceRepository.getAccountBalanceByAccountId(accountId);
-
-            if (accountBalance == null){
-                accountBalance = new AccountBalance();
-                accountBalance.accountId = accountId;
-                accountBalance.newBalance = getBalanceFromOfbiz(accountId);
-                return accBalanceRepository.save(accountBalance);
-            }
-
-            return accountBalance;
+            return getAccountBalanceImpl(payload);
         } catch (Exception e) {
             return e;
         }
+    }
+
+    private AccountBalance getAccountBalanceImpl(Map<String, Object> payload) throws Exception {
+        String accountId = (String) payload.get("accountId");
+
+        AccountBalance accountBalance = accBalanceRepository.getAccountBalanceByAccountId(accountId);
+
+        if (accountBalance == null){
+            accountBalance = new AccountBalance();
+            accountBalance.accountId = accountId;
+            accountBalance.newBalance = getBalanceFromOfbiz(accountId);
+            return accBalanceRepository.save(accountBalance);
+        }
+
+        return accountBalance;
     }
 
     @CrossOrigin(origins = "*")
@@ -58,7 +62,7 @@ public class AccBalanceController {
             consumes = {"application/json"},
             produces = {"application/json"}
     )
-    public Object updateAccountBalance(@RequestBody Map<String, Object> payload) {
+    public Object updateAccountBalance(@RequestBody Map<String, Object> payload) throws Exception {
         String accountId = (String) payload.get("accountId");
         double amount = Double.parseDouble((String) payload.get("amount"));
         String txIdentifier = (String) payload.get("txIdentifier");
@@ -66,7 +70,11 @@ public class AccBalanceController {
 
         Map<String,Object> accountBalanceQueryData = new HashMap<>();
         accountBalanceQueryData.put("accountId", accountId);
-        AccountBalance accountBalance =  (AccountBalance) getAccountBalance(accountBalanceQueryData);
+        return getBalanceUpdateResult(amount, txIdentifier, remark, accountBalanceQueryData);
+    }
+
+    private synchronized BalanceUpdateResult getBalanceUpdateResult(double amount, String txIdentifier, String remark, Map<String, Object> accountBalanceQueryData) throws Exception {
+        AccountBalance accountBalance = getAccountBalanceImpl(accountBalanceQueryData);
 
         double maxNegativeBalance = 0.0; // retrieve from settings
         double prevBalance = accountBalance.newBalance;
