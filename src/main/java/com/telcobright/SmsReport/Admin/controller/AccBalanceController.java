@@ -1,4 +1,7 @@
 package com.telcobright.SmsReport.Admin.controller;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.telcobright.SmsReport.Admin.repositories.AccBalanceRepository;
 import com.telcobright.SmsReport.Models.AccountBalance;
 import com.telcobright.SmsReport.Models.BalanceUpdateError;
@@ -9,8 +12,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/admin/Account")
@@ -22,7 +33,31 @@ public class AccBalanceController {
     }
 
     private Double getBalanceFromOfbiz(String accountId){
-        return 100.3;
+        try{
+            URL url = new URL("https://localhost:8443/ofbiz-spring/api/Accounting/getAccountBalance");
+
+            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+//            httpURLConnection.validateTLSCertificates(false); // must be fixed
+            httpURLConnection.setRequestMethod("POST");
+            httpURLConnection.setDoOutput(true);
+            httpURLConnection.setRequestProperty("Content-Type", "application/json");
+            httpURLConnection.setRequestProperty("Accept", "application/json");
+            OutputStream outputStream = httpURLConnection.getOutputStream();
+
+            Map<String,Object> payload = new HashMap<>();
+            payload.put("accountId",accountId);
+            outputStream.write(new ObjectMapper().convertValue(payload, JsonNode.class)
+                    .toString().getBytes(StandardCharsets.UTF_8));
+            outputStream.close();
+            InputStream responseStream = httpURLConnection.getInputStream();
+            BufferedReader responseReader = new BufferedReader(new InputStreamReader(responseStream));
+
+            String responseMessage = responseReader.lines().collect(Collectors.joining());
+            Map<String, Object> result = new ObjectMapper().readValue(responseMessage, new TypeReference<Map<String, Object>>() {});
+            return Double.parseDouble(String.valueOf(result.get("balance")));
+        }catch (Exception e){
+            return 0d;
+        }
     }
 
     @CrossOrigin(origins = "*")
