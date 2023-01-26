@@ -12,6 +12,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -19,6 +25,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -34,22 +41,34 @@ public class AccBalanceController {
 
     private Double getBalanceFromOfbiz(String accountId){
         try{
+            TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+                public java.security.cert.X509Certificate[] getAcceptedIssuers() { return null; }
+                public void checkClientTrusted(X509Certificate[] certs, String authType) { }
+                public void checkServerTrusted(X509Certificate[] certs, String authType) { }
+            } };
+
+            SSLContext sc = SSLContext.getInstance("SSL");
+            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+
+            HostnameVerifier allHostsValid = (hostname, session) -> true;
+            HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+
             URL url = new URL("https://localhost:8443/ofbiz-spring/api/Accounting/getAccountBalance");
 
-            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-//            httpURLConnection.validateTLSCertificates(false); // must be fixed
-            httpURLConnection.setRequestMethod("POST");
-            httpURLConnection.setDoOutput(true);
-            httpURLConnection.setRequestProperty("Content-Type", "application/json");
-            httpURLConnection.setRequestProperty("Accept", "application/json");
-            OutputStream outputStream = httpURLConnection.getOutputStream();
+            HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
+            httpsURLConnection.setRequestMethod("POST");
+            httpsURLConnection.setDoOutput(true);
+            httpsURLConnection.setRequestProperty("Content-Type", "application/json");
+            httpsURLConnection.setRequestProperty("Accept", "application/json");
+            OutputStream outputStream = httpsURLConnection.getOutputStream();
 
             Map<String,Object> payload = new HashMap<>();
             payload.put("accountId",accountId);
             outputStream.write(new ObjectMapper().convertValue(payload, JsonNode.class)
                     .toString().getBytes(StandardCharsets.UTF_8));
             outputStream.close();
-            InputStream responseStream = httpURLConnection.getInputStream();
+            InputStream responseStream = httpsURLConnection.getInputStream();
             BufferedReader responseReader = new BufferedReader(new InputStreamReader(responseStream));
 
             String responseMessage = responseReader.lines().collect(Collectors.joining());
@@ -76,7 +95,7 @@ public class AccBalanceController {
     }
 
     private AccountBalance getAccountBalanceImpl(Map<String, Object> payload) throws Exception {
-        String accountId = (String) payload.get("accountId");
+        String accountId = (String) payload.get("billingAccountId");
 
         AccountBalance accountBalance = accBalanceRepository.getAccountBalanceByAccountId(accountId);
 
@@ -104,7 +123,7 @@ public class AccBalanceController {
         String remark = (String) payload.get("remark");
 
         Map<String,Object> accountBalanceQueryData = new HashMap<>();
-        accountBalanceQueryData.put("accountId", accountId);
+        accountBalanceQueryData.put("billingAccountId", accountId);
         return getBalanceUpdateResult(amount, txIdentifier, remark, accountBalanceQueryData);
     }
 
