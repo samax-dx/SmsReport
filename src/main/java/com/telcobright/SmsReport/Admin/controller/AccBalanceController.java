@@ -3,9 +3,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.telcobright.SmsReport.Admin.repositories.AccBalanceRepository;
+import com.telcobright.SmsReport.Admin.repositories.TransactionHistoryRepository;
 import com.telcobright.SmsReport.Models.AccountBalance;
 import com.telcobright.SmsReport.Models.BalanceUpdateError;
 import com.telcobright.SmsReport.Models.BalanceUpdateResult;
+import com.telcobright.SmsReport.Models.TransactionHistory;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,30 +17,34 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/admin/Account")
 public class AccBalanceController {
     final AccBalanceRepository accBalanceRepository;
+    final TransactionHistoryRepository transactionHistoryRepository;
 
-    public AccBalanceController (AccBalanceRepository accBalanceRepository){
+    public AccBalanceController (AccBalanceRepository accBalanceRepository, TransactionHistoryRepository transactionHistoryRepository){
         this.accBalanceRepository = accBalanceRepository;
+        this.transactionHistoryRepository = transactionHistoryRepository;
     }
 
+    public static AtomicInteger transactionDeleteSegmentCounter = new AtomicInteger(0);
+    public static final int segmentSizeForTransactionDelete = 1000;
     private Double getBalanceFromOfbiz(String accountId){
         try{
             TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
@@ -103,7 +109,7 @@ public class AccBalanceController {
             accountBalance = new AccountBalance();
             accountBalance.accountId = accountId;
             accountBalance.newBalance = getBalanceFromOfbiz(accountId);
-            return accBalanceRepository.save(accountBalance);
+            accountBalance = accBalanceRepository.save(accountBalance);
         }
 
         return accountBalance;
@@ -144,7 +150,17 @@ public class AccBalanceController {
             accountBalance.txIdentifier = txIdentifier;
             accountBalance.remark = remark;
             accBalanceRepository.save(accountBalance);
-            return BalanceUpdateResult.fromAccountBalance(accountBalance);
+            BalanceUpdateResult balanceUpdateResult = BalanceUpdateResult.fromAccountBalance(accountBalance);
+            CompletableFuture.runAsync(() -> {
+                transactionHistoryRepository.save(TransactionHistory.fromAccountBalance(accountBalance));
+                int transactionCount = transactionDeleteSegmentCounter.incrementAndGet();
+                if (transactionCount >= segmentSizeForTransactionDelete){
+                    transactionHistoryRepository.deleteTransactionHistory();
+                    transactionDeleteSegmentCounter.set(0);
+                }
+            });
+            return balanceUpdateResult;
         }
     }
+
 }

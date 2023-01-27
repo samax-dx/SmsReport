@@ -9,7 +9,4 @@ public interface AccBalanceRepository extends CrudRepository<AccountBalance, Int
     @Query("select ac from account_balance ac where ac.accountId =?1")
     AccountBalance getAccountBalanceByAccountId(String accountId);
 
-//    @Query("select ac from account_balance ac where ac.accountId =?1")
-//    Page<AccountBalance> getAccBalance(String accountId,Pageable pageable);
-
 }
