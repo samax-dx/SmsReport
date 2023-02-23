@@ -140,7 +140,16 @@ public class AccBalanceController {
         double prevBalance = accountBalance.newBalance;
         double newBalance = prevBalance + amount; ///if amount type decrease(-5) it won't be less than 0
 
-        if (newBalance < maxNegativeBalance){
+        if (newBalance <= maxNegativeBalance) {
+            String accountId = (String) accountBalanceQueryData.get("billingAccountId");
+            AccountBalance accountBalanceNew = new AccountBalance();
+            accountBalanceNew.accountId = accountId;
+            accountBalanceNew.newBalance = getBalanceFromOfbiz(accountId);
+            accountBalanceNew = accBalanceRepository.save(accountBalanceNew);
+            newBalance = accountBalanceNew.newBalance;
+        }
+
+        if (newBalance <= maxNegativeBalance){
             BalanceUpdateError balanceUpdateError = new BalanceUpdateError("Insufficient Balance", newBalance);
             return BalanceUpdateResult.fromBalanceUpdateError(balanceUpdateError);
         } else {
