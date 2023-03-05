@@ -17,13 +17,13 @@ public class AccountBalance {
     @Column(name = "account_id")
     public String accountId;
 
-    @Column(name = "prev_balance")
+    @Column(precision=8, scale=2,name = "prev_balance")
     public Double prevBalance;
 
-    @Column(name = "new_amount")
+    @Column(precision=8, scale=2,name = "new_amount")
     public Double newAmount;
 
-    @Column(name = "new_balance")
+    @Column(precision=8, scale=2,name = "new_balance")
     public Double newBalance;
 
     @Column(name = "remark")
