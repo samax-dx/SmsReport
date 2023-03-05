@@ -100,7 +100,7 @@ public class AccBalanceController {
         }
     }
 
-    private AccountBalance getAccountBalanceImpl(Map<String, Object> payload) throws Exception {
+    private synchronized AccountBalance getAccountBalanceImpl(Map<String, Object> payload) throws Exception {
         String accountId = (String) payload.get("billingAccountId");
 
         AccountBalance accountBalance = accBalanceRepository.getAccountBalanceByAccountId(accountId);
