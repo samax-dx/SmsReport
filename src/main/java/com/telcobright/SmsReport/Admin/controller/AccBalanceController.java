@@ -133,12 +133,12 @@ public class AccBalanceController {
         return getBalanceUpdateResult(amount, txIdentifier, remark, accountBalanceQueryData);
     }
 
-    private synchronized BalanceUpdateResult getBalanceUpdateResult(double amount, String txIdentifier, String remark, Map<String, Object> accountBalanceQueryData) throws Exception {
+    private synchronized BalanceUpdateResult getBalanceUpdateResult(Double amount, String txIdentifier, String remark, Map<String, Object> accountBalanceQueryData) throws Exception {
         AccountBalance accountBalance = getAccountBalanceImpl(accountBalanceQueryData);
 
-        double maxNegativeBalance = 0.0; // retrieve from settings
-        double prevBalance = accountBalance.newBalance;
-        double newBalance = prevBalance + amount; ///if amount type decrease(-5) it won't be less than 0
+        Double maxNegativeBalance = 0.0; // retrieve from settings
+        Double prevBalance = accountBalance.newBalance;
+        Double newBalance = prevBalance + amount; ///if amount type decrease(-5) it won't be less than 0
 
         if (newBalance <= maxNegativeBalance) {
             String accountId = (String) accountBalanceQueryData.get("billingAccountId");

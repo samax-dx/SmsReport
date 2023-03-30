@@ -2,9 +2,9 @@ package com.telcobright.SmsReport.Models;
 
 public class BalanceUpdateError {
     String errorMessage;
-    double requestedAmount;
+    Double requestedAmount;
 
-    public BalanceUpdateError(String errorMessage, double requestedAmount) {
+    public BalanceUpdateError(String errorMessage, Double requestedAmount) {
         this.errorMessage = errorMessage;
         this.requestedAmount = requestedAmount;
     }
@@ -17,11 +17,11 @@ public class BalanceUpdateError {
         this.errorMessage = errorMessage;
     }
 
-    public double getRequestedAmount() {
+    public Double getRequestedAmount() {
         return requestedAmount;
     }
 
-    public void setRequestedAmount(double requestedAmount) {
+    public void setRequestedAmount(Double requestedAmount) {
         this.requestedAmount = requestedAmount;
     }
 }
