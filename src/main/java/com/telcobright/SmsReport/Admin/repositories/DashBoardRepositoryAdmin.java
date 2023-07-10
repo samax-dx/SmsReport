@@ -42,16 +42,16 @@ public interface DashBoardRepositoryAdmin extends JpaRepository<__sms_report_adm
     @Query("select count(*) as cnt from campaign_task ct where ct.lastUpdatedTxStamp >= ?2 and ct.lastUpdatedTxStamp <= ?1")
     int rtTotalTaskCount(LocalDateTime rtStart, LocalDateTime rtEnd);
 
-    @Query("select count(*) as cnt from campaign_task ct where campaignId in (select c.campaignId as cmpId from campaign c where c.partyId= ?1) and ct.status in ('sent') and ct.lastUpdatedTxStamp >= ?2 and ct.lastUpdatedTxStamp <= ?3")
+    @Query("select count(*) as cnt from campaign_task ct where campaignId in (select c.campaignId as cmpId from campaign c where c.partyId= ?1) and ct.statusExternal in ('delivered') and ct.lastUpdatedTxStamp >= ?2 and ct.lastUpdatedTxStamp <= ?3")
     int todaysTotalSuccessCountByPartyId(@Param("paryId") String partyId, LocalDateTime startDate, LocalDateTime endDate);
-    @Query("select count(*) as cnt from campaign_task ct where ct.status in ('sent') and ct.lastUpdatedTxStamp >= ?1 and ct.lastUpdatedTxStamp <= ?2")
+    @Query("select count(*) as cnt from campaign_task ct where ct.statusExternal in ('delivered') and ct.lastUpdatedTxStamp >= ?1 and ct.lastUpdatedTxStamp <= ?2")
     int todaysTotalSuccessCount(LocalDateTime startDate, LocalDateTime endDate);
-    @Query("select count(*) as cnt from campaign_task ct where campaignId in (select c.campaignId as cmpId from campaign c where c.partyId= ?1) and ct.status in ('sent') and ct.lastUpdatedTxStamp >= ?3 and ct.lastUpdatedTxStamp <= ?2")
+    @Query("select count(*) as cnt from campaign_task ct where campaignId in (select c.campaignId as cmpId from campaign c where c.partyId= ?1) and ct.statusExternal in ('delivered') and ct.lastUpdatedTxStamp >= ?3 and ct.lastUpdatedTxStamp <= ?2")
     int weekTotalSuccessCountByPartyId(@Param("paryId") String partyId, LocalDateTime weekStartDate, LocalDateTime weekEndDate);
-    @Query("select count(*) as cnt from campaign_task ct where ct.status in ('sent') and ct.lastUpdatedTxStamp >= ?2 and ct.lastUpdatedTxStamp <= ?1")
+    @Query("select count(*) as cnt from campaign_task ct where ct.statusExternal in ('delivered') and ct.lastUpdatedTxStamp >= ?2 and ct.lastUpdatedTxStamp <= ?1")
     int weekTotalSuccessCount(LocalDateTime weekStartDate, LocalDateTime weekEndDate);
 
-    @Query("select count(*) as cnt from campaign_task ct where ct.status in ('sent') and ct.lastUpdatedTxStamp >= ?2 and ct.lastUpdatedTxStamp <= ?1")
+    @Query("select count(*) as cnt from campaign_task ct where ct.statusExternal in ('delivered') and ct.lastUpdatedTxStamp >= ?2 and ct.lastUpdatedTxStamp <= ?1")
     int rtTotalSuccessCount(LocalDateTime rtStart, LocalDateTime rtEnd);
 
     @Query("select ct.routeId as rId, count(ct) as cnt from campaign_task ct where campaignId in (select c.campaignId as cmpId from campaign c where c.partyId= ?1) and ct.lastUpdatedTxStamp >= ?2 and ct.lastUpdatedTxStamp <= ?3 group by routeId ")
