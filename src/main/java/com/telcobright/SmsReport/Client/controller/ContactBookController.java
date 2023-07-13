@@ -20,6 +20,7 @@ import java.util.Map;
 
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/ContactBook")
 public class ContactBookController {
     final ContactGroupRepository contactGroupRepository;
@@ -54,5 +55,30 @@ public class ContactBookController {
         response.put("count", contacts.getTotalElements());
         return response;
     }
+
+//    @CrossOrigin(origins = "*")
+//    @RequestMapping(
+//            value = "/listContactGroupContactsForImport",
+//            method = RequestMethod.POST,
+//            consumes = {"application/json"},
+//            produces = {"application/json"}
+//    )
+//    public Map<String, Object> listContactGroupContactsForImport(@RequestBody Map<String, Object> payload, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+//        Long groupId = Long.decode(payload.getOrDefault("groupId", -1).toString());
+//        String contactName = (String) payload.getOrDefault("contactName", "");
+//        String contactNumber = (String) payload.getOrDefault("contactNumber", "");
+//        String partyId = AuthToken.findPartyId(token);
+//        int page = (int) payload.getOrDefault("page", 1) - 1;
+//        int limit = (int) payload.getOrDefault("limit", 3000);
+//
+//        ContactGroup group = contactGroupRepository.findGroupById(groupId).orElse(null);
+//        Page<Contact> contacts = contactRepository.searchGroupContactsForImport(partyId, groupId, contactName, contactNumber);
+//
+//        Map<String, Object> response = new HashMap<>();
+//        response.put("group", group);
+//        response.put("contacts", contacts.toList());
+//        response.put("count", contacts.getTotalElements());
+//        return response;
+//    }
 
 }
