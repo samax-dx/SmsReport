@@ -65,7 +65,6 @@ public class CampaignReportController {
 
         return result;
     }
-
     @CrossOrigin(origins = "*")
     @RequestMapping(
             value = "/campaignWise",
@@ -73,32 +72,35 @@ public class CampaignReportController {
             consumes = {"application/json"},
             produces = {"application/json"}
     )
-    public Map<String, Map<String, String>> campaignWise(@RequestBody Map<String, Object> payload, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+    public Map<String, Map<String, String>> campaignWiseReports(@RequestBody Map<String, Object> payload, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         String campaignId = ( payload.get("campaignId") != null ? (String) payload.get("campaignId"): " ");
-
         Integer page = (int) payload.getOrDefault("page", 1) - 1;
         Integer limit = (int) payload.getOrDefault("limit", 10);
 
-        List<Object[]> report = campaignReportRepository.campaignWise(campaignId);
+        List<Object[]> report = campaignReportRepository.campaignWiseReports(campaignId);
 
         Map<String, Map<String, String>> result = new HashMap<>();
 
         for (Object[] row : report) {
             String campaignIds = (row[0] != null) ? row[0].toString() : "null";
             String total = String.valueOf(row[1]);
-            String delivered = String.valueOf(row[2]);
-            String inProcess = String.valueOf(row[3]);
-            String failed = String.valueOf(row[4]);
+            String sent = String.valueOf(row[2]);
+            String delivered = String.valueOf(row[3]);
+            String inProcess = String.valueOf(row[4]);
+            String absentSubscriberSM = String.valueOf(row[5]);
+            String unidentifiedSubscriber = String.valueOf(row[6]);
 
             Map<String, String> campaignData = new HashMap<>();
             campaignData.put("total", total);
+            campaignData.put("sent", sent);
             campaignData.put("delivered", delivered);
             campaignData.put("inProcess", inProcess);
-            campaignData.put("failed", failed);
+            campaignData.put("absentSubscriberSM", absentSubscriberSM);
+            campaignData.put("unidentifiedSubscriber", unidentifiedSubscriber);
 
-            result.put("report", campaignData);
-
+            result.put("report",campaignData);
         }
+
         return result;
     }
 
