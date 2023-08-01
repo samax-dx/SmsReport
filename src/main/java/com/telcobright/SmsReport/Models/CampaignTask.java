@@ -63,6 +63,9 @@ public class CampaignTask {
     @Column(name = "all_retry_times")
     public String allRetryTimes;
 
+    @Column(name = "parent_id")
+    public String parentId;
+
     @Column(name = "task_detail_json")
     public String taskDetailJson;
 
