@@ -1,9 +1,6 @@
-package com.telcobright.SmsReport.Client.controller;
+package com.telcobright.SmsReport.Admin.controller;
 
-import com.telcobright.SmsReport.Client.repositories.CampaignReportRepository;
-import com.telcobright.SmsReport.Models.CampaignTask;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import com.telcobright.SmsReport.Admin.repositories.CampaignReportRepositoryAdmin;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,24 +8,22 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import sun.net.www.content.text.Generic;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/admin/reports")
-public class CampaignReportController {
+public class CampaignReportControllerAdmin {
 
-    final CampaignReportRepository campaignReportRepository;
+    final CampaignReportRepositoryAdmin campaignReportRepositoryAdmin;
 
-    public CampaignReportController(CampaignReportRepository campaignReportRepository) {
-        this.campaignReportRepository = campaignReportRepository;
+    public CampaignReportControllerAdmin(CampaignReportRepositoryAdmin campaignReportRepositoryAdmin) {
+        this.campaignReportRepositoryAdmin = campaignReportRepositoryAdmin;
     }
+
 
     @CrossOrigin(origins = "*")
     @RequestMapping(
@@ -42,7 +37,7 @@ public class CampaignReportController {
         Integer page = (int) payload.getOrDefault("page", 1) - 1;
         Integer limit = (int) payload.getOrDefault("limit", 10);
 
-        List<Object[]> report = campaignReportRepository.routeWise(routeId);
+        List<Object[]> report = campaignReportRepositoryAdmin.routeWise(routeId);
 
         List<Map<String, Object>> result = new ArrayList<>();
 
@@ -65,44 +60,7 @@ public class CampaignReportController {
 
         return result;
     }
-    @CrossOrigin(origins = "*")
-    @RequestMapping(
-            value = "/campaignWise",
-            method = RequestMethod.POST,
-            consumes = {"application/json"},
-            produces = {"application/json"}
-    )
-    public Map<String, Map<String, String>> campaignWiseReports(@RequestBody Map<String, Object> payload, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        String campaignId = ( payload.get("campaignId") != null ? (String) payload.get("campaignId"): " ");
-        Integer page = (int) payload.getOrDefault("page", 1) - 1;
-        Integer limit = (int) payload.getOrDefault("limit", 10);
 
-        List<Object[]> report = campaignReportRepository.campaignWiseReports(campaignId);
-
-        Map<String, Map<String, String>> result = new HashMap<>();
-
-        for (Object[] row : report) {
-            String campaignIds = (row[0] != null) ? row[0].toString() : "null";
-            String total = String.valueOf(row[1]);
-            String sent = String.valueOf(row[2]);
-            String delivered = String.valueOf(row[3]);
-            String inProcess = String.valueOf(row[4]);
-            String absentSubscriberSM = String.valueOf(row[5]);
-            String unidentifiedSubscriber = String.valueOf(row[6]);
-
-            Map<String, String> campaignData = new HashMap<>();
-            campaignData.put("total", total);
-            campaignData.put("sent", sent);
-            campaignData.put("delivered", delivered);
-            campaignData.put("inProcess", inProcess);
-            campaignData.put("absentSubscriberSM", absentSubscriberSM);
-            campaignData.put("unidentifiedSubscriber", unidentifiedSubscriber);
-
-            result.put("report",campaignData);
-        }
-
-        return result;
-    }
 
     @CrossOrigin(origins = "*")
     @RequestMapping(
@@ -120,7 +78,7 @@ public class CampaignReportController {
         Integer page = (int) payload.getOrDefault("page", 1) - 1;
         Integer limit = (int) payload.getOrDefault("limit", 10);
 
-        List<Object[]> report = campaignReportRepository.campaignAndRouteWiseReports(campaignId, routeId);
+        List<Object[]> report = campaignReportRepositoryAdmin.campaignAndRouteWiseReports(campaignId, routeId);
 
         Map<String, Map<String, Map<String, String>>> result = new HashMap<>();
 
@@ -212,7 +170,7 @@ public class CampaignReportController {
         Integer page = (int) payload.getOrDefault("page", 1) - 1;
         Integer limit = (int) payload.getOrDefault("limit", 10);
 
-        List<Object[]> report = campaignReportRepository.campaignRouteAndPartyWiseReports(campaignId, routeId, partyId);
+        List<Object[]> report = campaignReportRepositoryAdmin.campaignRouteAndPartyWiseReports(campaignId, routeId, partyId);
 
 //    Map<String, Map<String, Map<String, Map<String, Integer>>>> result = new HashMap<>();
         List<Map<String, Object>> result = new ArrayList<>();
