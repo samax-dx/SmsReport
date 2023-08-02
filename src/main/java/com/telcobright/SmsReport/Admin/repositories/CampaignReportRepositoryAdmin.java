@@ -4,6 +4,7 @@ import com.telcobright.SmsReport.Models.CampaignTask;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface CampaignReportRepositoryAdmin extends JpaRepository<CampaignTask,Long>{
@@ -106,6 +107,7 @@ public interface CampaignReportRepositoryAdmin extends JpaRepository<CampaignTas
                 "\t\tfrom campaign_task ct\n" +
                 "\t\tjoin campaign c2 on ct.CAMPAIGN_ID = c2.CAMPAIGN_ID \n" +
                 "\t\twhere ct.PARENT_ID  is null \n" +
+                "\t\tand (ct.last_updated_tx_stamp >= ?4 and ct.last_updated_tx_stamp <= ?5)\n" +
                 "\t\tand (ct.campaign_id = ?1 or ?1 = ' ' or ?1 = null)\n" +
 //        "\t\tand route_id = \"grameenphone\"\n" +
                 "\t\tand (route_id = ?2 or ?2 = ' ' or ?2 = null)\n" +
@@ -116,6 +118,7 @@ public interface CampaignReportRepositoryAdmin extends JpaRepository<CampaignTas
                 "\t\tfrom campaign_task ct \n" +
                 "\t\tjoin campaign c2 on ct.CAMPAIGN_ID = c2.CAMPAIGN_ID \n" +
                 "\t\twhere ct.PARENT_ID  is null\n" +
+                "\t\tand (ct.last_updated_tx_stamp >= ?4 and ct.last_updated_tx_stamp <= ?5)\n" +
                 "\t\tand (ct.campaign_id = ?1 or ?1 = ' ' or ?1 = null)\n" +
 //        "\t\tand route_id = \"grameenphone\"\n" +
                 "\t\tand (route_id = ?2 or ?2 = ' ' or ?2 = null)\n" +
@@ -127,6 +130,7 @@ public interface CampaignReportRepositoryAdmin extends JpaRepository<CampaignTas
                 "\t\tfrom campaign_task ct \n" +
                 "\t\tjoin campaign c2 on ct.CAMPAIGN_ID = c2.CAMPAIGN_ID \n" +
                 "\t\twhere ct.PARENT_ID  is null\n" +
+                "\t\tand (ct.last_updated_tx_stamp >= ?4 and ct.last_updated_tx_stamp <= ?5)\n" +
                 "\t\tand (ct.campaign_id = ?1 or ?1 = ' ' or ?1 = null)\n" +
 //        "\t\tand route_id = \"grameenphone\"\n" +
                 "\t\tand (route_id = ?2 or ?2 = ' ' or ?2 = null)\n" +
@@ -141,6 +145,7 @@ public interface CampaignReportRepositoryAdmin extends JpaRepository<CampaignTas
                 "\t\tfrom campaign_task ct \n" +
                 "\t\tjoin campaign c2 on ct.CAMPAIGN_ID = c2.CAMPAIGN_ID \n" +
                 "\t\twhere ct.PARENT_ID  is null\n" +
+                "\t\tand (ct.last_updated_tx_stamp >= ?4 and ct.last_updated_tx_stamp <= ?5)\n" +
                 "\t\tand (ct.campaign_id = ?1 or ?1 = ' ' or ?1 = null)\n" +
 //        "\t\tand route_id = \"grameenphone\"\n" +
                 "\t\tand (route_id = ?2 or ?2 = ' ' or ?2 = null)\n" +
@@ -153,6 +158,7 @@ public interface CampaignReportRepositoryAdmin extends JpaRepository<CampaignTas
                 "\t\tfrom campaign_task ct \n" +
                 "\t\tjoin campaign c2 on ct.CAMPAIGN_ID = c2.CAMPAIGN_ID \n" +
                 "\t\twhere ct.PARENT_ID  is null\n" +
+                "\t\tand (ct.last_updated_tx_stamp >= ?4 and ct.last_updated_tx_stamp <= ?5)\n" +
                 "\t\tand (ct.campaign_id = ?1 or ?1 = ' ' or ?1 = null)\n" +
 //        "\t\tand route_id = \"grameenphone\"\n" +
                 "\t\tand (route_id = ?2 or ?2 = ' ' or ?2 = null)\n" +
@@ -161,10 +167,10 @@ public interface CampaignReportRepositoryAdmin extends JpaRepository<CampaignTas
                 "\t\tgroup by ct.campaign_id, route_id,c2.party_id #suspended\n" +
                 "\n" +
                 "\t) t\n" +
-                "\tgroup by PARTY_ID,campaign_id, route_id limit 0,10;",
+                "\tgroup by PARTY_ID,campaign_id, route_id limit ?6 offset ?7",
                 nativeQuery = true)
 
-        List<Object[]> campaignRouteAndPartyWiseReports(String campaignId, String routeId, String partyId);
+        List<Object[]> campaignRouteAndPartyWiseReports(String campaignId, String routeId, String partyId, LocalDateTime createdStartTime, LocalDateTime createdEndTime, Integer limit, Integer offset);
 
 }
 

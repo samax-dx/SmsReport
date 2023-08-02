@@ -9,10 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @RestController
 @RequestMapping("/admin/reports")
@@ -169,10 +168,28 @@ public class CampaignReportControllerAdmin {
         String partyId = (payload.get("partyId") != null ? (String) payload.get("partyId") : " ");
         Integer page = (int) payload.getOrDefault("page", 1) - 1;
         Integer limit = (int) payload.getOrDefault("limit", 10);
+        Integer offset = page * limit;
 
-        List<Object[]> report = campaignReportRepositoryAdmin.campaignRouteAndPartyWiseReports(campaignId, routeId, partyId);
+        String startDate = (String) payload.get("createdOn_fld0_value");
+        String endDate = (String) payload.get("createdOn_fld1_value");
+        LocalDateTime createdStartTime = null;
+        LocalDateTime createdEndTime = null;
 
-//    Map<String, Map<String, Map<String, Map<String, Integer>>>> result = new HashMap<>();
+        if (startDate != null && endDate != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            createdStartTime = LocalDateTime.parse(startDate, formatter);
+            createdEndTime = LocalDateTime.parse(endDate, formatter);
+        }
+
+        List<Object[]> report;
+        if (createdStartTime != null && createdEndTime != null) {
+            report = campaignReportRepositoryAdmin.campaignRouteAndPartyWiseReports(campaignId, routeId, partyId, createdStartTime, createdEndTime, limit,offset);
+        } else {
+            createdStartTime = LocalDateTime.of(1970, 1, 1, 0, 0, 0); // Default start date: January 1, 1970 00:00:00
+            createdEndTime = LocalDateTime.now(); // Default end date: Current date and time
+            report = campaignReportRepositoryAdmin.campaignRouteAndPartyWiseReports(campaignId, routeId, partyId, createdStartTime, createdEndTime, limit, offset);
+        }
+
         List<Map<String, Object>> result = new ArrayList<>();
 
         for (Object[] row : report) {
