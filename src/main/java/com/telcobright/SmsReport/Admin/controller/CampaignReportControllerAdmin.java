@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -24,133 +25,133 @@ public class CampaignReportControllerAdmin {
     }
 
 
-    @CrossOrigin(origins = "*")
-    @RequestMapping(
-            value = "/routeWise",
-            method = RequestMethod.POST,
-            consumes = {"application/json"},
-            produces = {"application/json"}
-    )
-    public List<Map<String, Object>> routeWise(@RequestBody Map<String, Object> payload, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        String routeId = ( payload.get("routeId") != null ? (String) payload.get("routeId"): " ");
-        Integer page = (int) payload.getOrDefault("page", 1) - 1;
-        Integer limit = (int) payload.getOrDefault("limit", 10);
-
-        List<Object[]> report = campaignReportRepositoryAdmin.routeWise(routeId);
-
-        List<Map<String, Object>> result = new ArrayList<>();
-
-        for (Object[] row : report) {
-            String currentRouteId = (row[0] != null) ? row[0].toString() : "null";
-            String total = String.valueOf(row[1]);
-            String delivered = String.valueOf(row[2]);
-            String inProcess = String.valueOf(row[3]);
-            String failed = String.valueOf(row[4]);
-
-            Map<String, Object> routeData = new HashMap<>();
-            routeData.put("routeId", currentRouteId);
-            routeData.put("total", total);
-            routeData.put("delivered", delivered);
-            routeData.put("inProcess", inProcess);
-            routeData.put("failed", failed);
-
-            result.add(routeData);
-        }
-
-        return result;
-    }
-
-
-    @CrossOrigin(origins = "*")
-    @RequestMapping(
-            value = "/campaignAndRouteWiseReports",
-            method = RequestMethod.POST,
-            consumes = {"application/json"},
-            produces = {"application/json"}
-    )
-    public Map<String, Map<String, Map<String, String>>> campaignAndRouteWiseReports(
-            @RequestBody Map<String, Object> payload,
-            @RequestHeader(HttpHeaders.AUTHORIZATION) String token
-    ) {
-        String campaignId = (payload.get("campaignId") != null ? (String) payload.get("campaignId") : " ");
-        String routeId = (payload.get("routeId") != null ? (String) payload.get("routeId") : " ");
-        Integer page = (int) payload.getOrDefault("page", 1) - 1;
-        Integer limit = (int) payload.getOrDefault("limit", 10);
-
-        List<Object[]> report = campaignReportRepositoryAdmin.campaignAndRouteWiseReports(campaignId, routeId);
-
-        Map<String, Map<String, Map<String, String>>> result = new HashMap<>();
-
-        for (Object[] row : report) {
-            String campaignIds = (row[0] != null) ? row[0].toString() : "null";
-            String routeIds = (row[1] != null) ? row[1].toString() : "null";
-            String total = String.valueOf(row[2]);
-            String delivered = String.valueOf(row[3]);
-            String inProcess = String.valueOf(row[4]);
-            String failed = String.valueOf(row[5]);
-
-            Map<String, Map<String, String>> campaignData = result.getOrDefault(campaignIds, new HashMap<>());
-
-            Map<String, String> routeData = new HashMap<>();
-            routeData.put("total", total);
-            routeData.put("delivered", delivered);
-            routeData.put("inProcess", inProcess);
-            routeData.put("failed", failed);
-
-            campaignData.put(routeIds, routeData);
-            result.put(campaignIds, campaignData);
-        }
-
-        return result;
-    }
-
-//@CrossOrigin(origins = "*")
-//@RequestMapping(
-//        value = "/campaignRouteAndPartyWiseReports",
-//        method = RequestMethod.POST,
-//        consumes = {"application/json"},
-//        produces = {"application/json"}
-//)
-//public Map<String, Map<String, Map<String, Map<String, Integer>>>> campaignRouteAndPartyWiseReports(
-//        @RequestBody Map<String, Object> payload,
-//        @RequestHeader(HttpHeaders.AUTHORIZATION) String token
-//) {
-//    String campaignId = (payload.get("campaignId") != null ? (String) payload.get("campaignId") : " ");
-//    String routeId = (payload.get("routeId") != null ? (String) payload.get("routeId") : " ");
-//    String partyId = (payload.get("partyId") != null ? (String) payload.get("partyId") : " ");
-//    Integer page = (int) payload.getOrDefault("page", 1) - 1;
-//    Integer limit = (int) payload.getOrDefault("limit", 10);
+//    @CrossOrigin(origins = "*")
+//    @RequestMapping(
+//            value = "/routeWise",
+//            method = RequestMethod.POST,
+//            consumes = {"application/json"},
+//            produces = {"application/json"}
+//    )
+//    public List<Map<String, Object>> routeWise(@RequestBody Map<String, Object> payload, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+//        String routeId = (payload.get("routeId") != null ? (String) payload.get("routeId") : " ");
+//        Integer page = (int) payload.getOrDefault("page", 1) - 1;
+//        Integer limit = (int) payload.getOrDefault("limit", 10);
 //
-//    List<Object[]> report = campaignReportRepository.campaignRouteAndPartyWiseReports(campaignId, routeId, partyId);
+//        List<Object[]> report = campaignReportRepositoryAdmin.routeWise(routeId, createdStartTime, createdEndTime);
 //
-//    Map<String, Map<String, Map<String, Map<String, Integer>>>> result = new HashMap<>();
+//        List<Map<String, Object>> result = new ArrayList<>();
 //
-//    for (Object[] row : report) {
-//        String partyIdVal = (row[0] != null) ? row[0].toString() : "null";
-//        String campaignIds = (row[1] != null) ? row[1].toString() : "null";
-//        String routeIds = (row[2] != null) ? row[2].toString() : "null";
-//        int total = (row[3] != null) ? Integer.parseInt(row[3].toString()) : 0;
-//        int delivered = (row[4] != null) ? Integer.parseInt(row[4].toString()) : 0;
-//        int inProcess = (row[5] != null) ? Integer.parseInt(row[5].toString()) : 0;
-//        int failed = (row[6] != null) ? Integer.parseInt(row[6].toString()) : 0;
+//        for (Object[] row : report) {
+//            String currentRouteId = (row[0] != null) ? row[0].toString() : "null";
+//            String total = String.valueOf(row[1]);
+//            String delivered = String.valueOf(row[2]);
+//            String inProcess = String.valueOf(row[3]);
+//            String failed = String.valueOf(row[4]);
 //
-//        Map<String, Map<String, Map<String, Integer>>> partyData = result.getOrDefault(partyIdVal, new HashMap<>());
+//            Map<String, Object> routeData = new HashMap<>();
+//            routeData.put("routeId", currentRouteId);
+//            routeData.put("total", total);
+//            routeData.put("delivered", delivered);
+//            routeData.put("inProcess", inProcess);
+//            routeData.put("failed", failed);
 //
-//        Map<String, Map<String, Integer>> campaignData = partyData.getOrDefault(campaignIds, new HashMap<>());
+//            result.add(routeData);
+//        }
 //
-//        Map<String, Integer> routeData = new HashMap<>();
-//        routeData.put("total", total);
-//        routeData.put("inProcess", inProcess);
-//        routeData.put("delivered", delivered);
-//        routeData.put("failed", failed);
+//        return result;
+//    }
+
+
+//    @CrossOrigin(origins = "*")
+//    @RequestMapping(
+//            value = "/campaignAndRouteWiseReports",
+//            method = RequestMethod.POST,
+//            consumes = {"application/json"},
+//            produces = {"application/json"}
+//    )
+//    public Map<String, Map<String, Map<String, String>>> campaignAndRouteWiseReports(
+//            @RequestBody Map<String, Object> payload,
+//            @RequestHeader(HttpHeaders.AUTHORIZATION) String token
+//    ) {
+//        String campaignId = (payload.get("campaignId") != null ? (String) payload.get("campaignId") : " ");
+//        String routeId = (payload.get("routeId") != null ? (String) payload.get("routeId") : " ");
+//        Integer page = (int) payload.getOrDefault("page", 1) - 1;
+//        Integer limit = (int) payload.getOrDefault("limit", 10);
 //
-//        campaignData.put(routeIds, routeData);
-//        partyData.put(campaignIds, campaignData);
-//        result.put(partyIdVal, partyData);
+//        List<Object[]> report = campaignReportRepositoryAdmin.campaignAndRouteWiseReports(campaignId, routeId);
+//
+//        Map<String, Map<String, Map<String, String>>> result = new HashMap<>();
+//
+//        for (Object[] row : report) {
+//            String campaignIds = (row[0] != null) ? row[0].toString() : "null";
+//            String routeIds = (row[1] != null) ? row[1].toString() : "null";
+//            String total = String.valueOf(row[2]);
+//            String delivered = String.valueOf(row[3]);
+//            String inProcess = String.valueOf(row[4]);
+//            String failed = String.valueOf(row[5]);
+//
+//            Map<String, Map<String, String>> campaignData = result.getOrDefault(campaignIds, new HashMap<>());
+//
+//            Map<String, String> routeData = new HashMap<>();
+//            routeData.put("total", total);
+//            routeData.put("delivered", delivered);
+//            routeData.put("inProcess", inProcess);
+//            routeData.put("failed", failed);
+//
+//            campaignData.put(routeIds, routeData);
+//            result.put(campaignIds, campaignData);
+//        }
+//
+//        return result;
 //    }
 //
-//    return result;
-//}
+////@CrossOrigin(origins = "*")
+////@RequestMapping(
+////        value = "/campaignRouteAndPartyWiseReports",
+////        method = RequestMethod.POST,
+////        consumes = {"application/json"},
+////        produces = {"application/json"}
+////)
+////public Map<String, Map<String, Map<String, Map<String, Integer>>>> campaignRouteAndPartyWiseReports(
+////        @RequestBody Map<String, Object> payload,
+////        @RequestHeader(HttpHeaders.AUTHORIZATION) String token
+////) {
+////    String campaignId = (payload.get("campaignId") != null ? (String) payload.get("campaignId") : " ");
+////    String routeId = (payload.get("routeId") != null ? (String) payload.get("routeId") : " ");
+////    String partyId = (payload.get("partyId") != null ? (String) payload.get("partyId") : " ");
+////    Integer page = (int) payload.getOrDefault("page", 1) - 1;
+////    Integer limit = (int) payload.getOrDefault("limit", 10);
+////
+////    List<Object[]> report = campaignReportRepository.campaignRouteAndPartyWiseReports(campaignId, routeId, partyId);
+////
+////    Map<String, Map<String, Map<String, Map<String, Integer>>>> result = new HashMap<>();
+////
+////    for (Object[] row : report) {
+////        String partyIdVal = (row[0] != null) ? row[0].toString() : "null";
+////        String campaignIds = (row[1] != null) ? row[1].toString() : "null";
+////        String routeIds = (row[2] != null) ? row[2].toString() : "null";
+////        int total = (row[3] != null) ? Integer.parseInt(row[3].toString()) : 0;
+////        int delivered = (row[4] != null) ? Integer.parseInt(row[4].toString()) : 0;
+////        int inProcess = (row[5] != null) ? Integer.parseInt(row[5].toString()) : 0;
+////        int failed = (row[6] != null) ? Integer.parseInt(row[6].toString()) : 0;
+////
+////        Map<String, Map<String, Map<String, Integer>>> partyData = result.getOrDefault(partyIdVal, new HashMap<>());
+////
+////        Map<String, Map<String, Integer>> campaignData = partyData.getOrDefault(campaignIds, new HashMap<>());
+////
+////        Map<String, Integer> routeData = new HashMap<>();
+////        routeData.put("total", total);
+////        routeData.put("inProcess", inProcess);
+////        routeData.put("delivered", delivered);
+////        routeData.put("failed", failed);
+////
+////        campaignData.put(routeIds, routeData);
+////        partyData.put(campaignIds, campaignData);
+////        result.put(partyIdVal, partyData);
+////    }
+////
+////    return result;
+////}
 
     @CrossOrigin(origins = "*")
     @RequestMapping(
@@ -159,7 +160,7 @@ public class CampaignReportControllerAdmin {
             consumes = {"application/json"},
             produces = {"application/json"}
     )
-    public List<Map<String, Object>> campaignRouteAndPartyWiseReport(
+    public Map<String, Object> campaignRouteAndPartyWiseReport(
             @RequestBody Map<String, Object> payload,
             @RequestHeader(HttpHeaders.AUTHORIZATION) String token
     ) {
@@ -181,43 +182,266 @@ public class CampaignReportControllerAdmin {
             createdEndTime = LocalDateTime.parse(endDate, formatter);
         }
 
-        List<Object[]> report;
-        if (createdStartTime != null && createdEndTime != null) {
-            report = campaignReportRepositoryAdmin.campaignRouteAndPartyWiseReports(campaignId, routeId, partyId, createdStartTime, createdEndTime, limit,offset);
-        } else {
-            createdStartTime = LocalDateTime.of(1970, 1, 1, 0, 0, 0); // Default start date: January 1, 1970 00:00:00
-            createdEndTime = LocalDateTime.now(); // Default end date: Current date and time
-            report = campaignReportRepositoryAdmin.campaignRouteAndPartyWiseReports(campaignId, routeId, partyId, createdStartTime, createdEndTime, limit, offset);
-        }
-
+        List<Object[]> report = new ArrayList<>();
+        Integer size = 0;
         List<Map<String, Object>> result = new ArrayList<>();
+        if (campaignId == " " && routeId == " " && partyId == " ") {
+            if (createdStartTime != null && createdEndTime != null) {
+                report = campaignReportRepositoryAdmin.campaignRouteAndPartyWiseReports(campaignId, routeId, partyId, createdStartTime, createdEndTime, limit, offset);
+                size = campaignReportRepositoryAdmin.countAllCampaign(campaignId, partyId);
+            } else {
+                createdStartTime = LocalDateTime.of(1970, 1, 1, 0, 0, 0); // Default start date: January 1, 1970 00:00:00
+                createdEndTime = LocalDateTime.now(); // Default end date: Current date and time
+                report = campaignReportRepositoryAdmin.campaignRouteAndPartyWiseReports(campaignId, routeId, partyId, createdStartTime, createdEndTime, limit, offset);
+                size = campaignReportRepositoryAdmin.countAllCampaign(campaignId, partyId);
+            }
 
-        for (Object[] row : report) {
-            String currentPartyId = (row[0] != null) ? row[0].toString() : "null";
-            String currentCampaignId = (row[1] != null) ? row[1].toString() : "null";
-            String currentRouteId = (row[2] != null) ? row[2].toString() : "null";
-            int total = (row[3] != null) ? Integer.parseInt(row[3].toString()) : 0;
-            int delivered = (row[4] != null) ? Integer.parseInt(row[4].toString()) : 0;
-            int inProcess = (row[5] != null) ? Integer.parseInt(row[5].toString()) : 0;
-            int failed = (row[6] != null) ? Integer.parseInt(row[6].toString()) : 0;
-            int suspended = (row[7] != null) ? Integer.parseInt(row[7].toString()) : 0;
+            for (Object[] row : report) {
+                String currentPartyId = (row[0] != null) ? row[0].toString() : "null";
+                String currentCampaignId = (row[1] != null) ? row[1].toString() : "null";
+                String currentRouteId = (row[2] != null) ? row[2].toString() : "null";
+                int total = (row[3] != null) ? Integer.parseInt(row[3].toString()) : 0;
+                int delivered = (row[4] != null) ? Integer.parseInt(row[4].toString()) : 0;
+                int inProcess = (row[5] != null) ? Integer.parseInt(row[5].toString()) : 0;
+                int failed = (row[6] != null) ? Integer.parseInt(row[6].toString()) : 0;
+                int sent = (row[7] != null) ? Integer.parseInt(row[7].toString()) : 0;
 
-            Map<String, Object> reports = new HashMap<>();
-            reports.put("partyId",currentPartyId);
-            reports.put("campaignId",currentCampaignId);
-            reports.put("routeId",currentRouteId);
-            reports.put("total", total);
-            reports.put("inProcess", inProcess);
-            reports.put("delivered", delivered);
-            reports.put("failed", failed);
-            reports.put("suspended", suspended);
+                Map<String, Object> reports = new HashMap<>();
+                reports.put("partyId", currentPartyId);
+                reports.put("campaignId", currentCampaignId);
+                reports.put("routeId", currentRouteId);
+                reports.put("total", total);
+                reports.put("delivered", delivered);
+                reports.put("inProcess", inProcess);
+                reports.put("failed", failed);
+                reports.put("sent", sent);
 
-            result.add(reports);
-
+                result.add(reports);
+            }
         }
+        else if (campaignId != " " && routeId != " " && partyId != " ") {
+            if (createdStartTime != null && createdEndTime != null) {
+                report = campaignReportRepositoryAdmin.campaignRouteAndPartyWiseReports(campaignId, routeId, partyId, createdStartTime, createdEndTime, limit, offset);
+//                size = campaignReportRepositoryAdmin.countAllCampaign(campaignId,partyId);
+            } else {
+                createdStartTime = LocalDateTime.of(1970, 1, 1, 0, 0, 0); // Default start date: January 1, 1970 00:00:00
+                createdEndTime = LocalDateTime.now(); // Default end date: Current date and time
+                report = campaignReportRepositoryAdmin.campaignRouteAndPartyWiseReports(campaignId, routeId, partyId, createdStartTime, createdEndTime, limit, offset);
+//                size = campaignReportRepositoryAdmin.countAllCampaign(campaignId, partyId);
+            }
 
-        return result;
+            for (Object[] row : report) {
+                String currentPartyId = (row[0] != null) ? row[0].toString() : "null";
+                String currentCampaignId = (row[1] != null) ? row[1].toString() : "null";
+                String currentRouteId = (row[2] != null) ? row[2].toString() : "null";
+                int total = (row[3] != null) ? Integer.parseInt(row[3].toString()) : 0;
+                int delivered = (row[4] != null) ? Integer.parseInt(row[4].toString()) : 0;
+                int inProcess = (row[5] != null) ? Integer.parseInt(row[5].toString()) : 0;
+                int failed = (row[6] != null) ? Integer.parseInt(row[6].toString()) : 0;
+                int sent = (row[7] != null) ? Integer.parseInt(row[7].toString()) : 0;
+
+                Map<String, Object> reports = new HashMap<>();
+                reports.put("partyId", currentPartyId);
+                reports.put("campaignId", currentCampaignId);
+                reports.put("routeId", currentRouteId);
+                reports.put("total", total);
+                reports.put("delivered", delivered);
+                reports.put("inProcess", inProcess);
+                reports.put("failed", failed);
+                reports.put("sent", sent);
+
+                result.add(reports);
+            }
+        }
+        else if (campaignId != null && routeId.equals(" ") && partyId.equals(" ")) {
+            if (createdStartTime != null && createdEndTime != null) {
+                report = campaignReportRepositoryAdmin.campaignWise(campaignId, createdStartTime, createdEndTime);
+//                size = campaignReportRepositoryAdmin.countAllCampaign(campaignId, partyId);
+            } else {
+                createdStartTime = LocalDateTime.of(1970, 1, 1, 0, 0, 0); // Default start date: January 1, 1970 00:00:00
+                createdEndTime = LocalDateTime.now(); // Default end date: Current date and time
+                report = campaignReportRepositoryAdmin.campaignWise(campaignId, createdStartTime, createdEndTime);
+//                size = campaignReportRepositoryAdmin.countAllCampaign(campaignId, partyId);
+            }
+
+            for (Object[] row : report) {
+                String currentCampaignId = (row[0] != null) ? row[0].toString() : "null";
+                int total = (row[1] != null) ? Integer.parseInt(row[1].toString()) : 0;
+                int delivered = (row[2] != null) ? Integer.parseInt(row[2].toString()) : 0;
+                int inProcess = (row[3] != null) ? Integer.parseInt(row[3].toString()) : 0;
+                int failed = (row[4] != null) ? Integer.parseInt(row[4].toString()) : 0;
+                int sent = (row[5] != null) ? Integer.parseInt(row[5].toString()) : 0;
+
+                Map<String, Object> reports = new HashMap<>();
+                reports.put("campaignId", currentCampaignId);
+                reports.put("total", total);
+                reports.put("delivered", delivered);
+                reports.put("inProcess", inProcess);
+                reports.put("failed", failed);
+                reports.put("sent", sent);
+
+                result.add(reports);
+            }
+        } else if (routeId != null && campaignId.equals(" ") && partyId.equals(" ")) {
+            if (createdStartTime != null && createdEndTime != null) {
+                report = campaignReportRepositoryAdmin.routeWise(routeId, createdStartTime, createdEndTime);
+//                size = campaignReportRepositoryAdmin.countAllRoute(routeId);
+            } else {
+                createdStartTime = LocalDateTime.of(1970, 1, 1, 0, 0, 0); // Default start date: January 1, 1970 00:00:00
+                createdEndTime = LocalDateTime.now(); // Default end date: Current date and time
+                report = campaignReportRepositoryAdmin.routeWise(routeId, createdStartTime, createdEndTime);
+//                size = campaignReportRepositoryAdmin.countAllRoute(routeId);
+            }
+
+            for (Object[] row : report) {
+                String currentRouteId = (row[0] != null) ? row[0].toString() : "null";
+                int total = (row[1] != null) ? Integer.parseInt(row[1].toString()) : 0;
+                int delivered = (row[2] != null) ? Integer.parseInt(row[2].toString()) : 0;
+                int inProcess = (row[3] != null) ? Integer.parseInt(row[3].toString()) : 0;
+                int failed = (row[4] != null) ? Integer.parseInt(row[4].toString()) : 0;
+                int sent = (row[5] != null) ? Integer.parseInt(row[5].toString()) : 0;
+
+                Map<String, Object> reports = new HashMap<>();
+                reports.put("routeId", currentRouteId);
+                reports.put("total", total);
+                reports.put("inProcess", inProcess);
+                reports.put("delivered", delivered);
+                reports.put("failed", failed);
+                reports.put("sent", sent);
+
+                result.add(reports);
+            }
+        }else if (partyId != null && campaignId.equals(" ") && routeId.equals(" ")) {
+            if (createdStartTime != null && createdEndTime != null) {
+                report = campaignReportRepositoryAdmin.partyWise(partyId, createdStartTime, createdEndTime);
+//                size = campaignReportRepositoryAdmin.countAllParty(partyId);
+            } else {
+                createdStartTime = LocalDateTime.of(1970, 1, 1, 0, 0, 0); // Default start date: January 1, 1970 00:00:00
+                createdEndTime = LocalDateTime.now(); // Default end date: Current date and time
+                report = campaignReportRepositoryAdmin.partyWise(partyId, createdStartTime, createdEndTime);
+//                size = campaignReportRepositoryAdmin.countAllParty(partyId);
+            }
+
+            for (Object[] row : report) {
+                String currentPartyId = (row[0] != null) ? row[0].toString() : "null";
+                int total = (row[1] != null) ? Integer.parseInt(row[1].toString()) : 0;
+                int delivered = (row[2] != null) ? Integer.parseInt(row[2].toString()) : 0;
+                int inProcess = (row[3] != null) ? Integer.parseInt(row[3].toString()) : 0;
+                int failed = (row[4] != null) ? Integer.parseInt(row[4].toString()) : 0;
+                int sent = (row[5] != null) ? Integer.parseInt(row[5].toString()) : 0;
+
+                Map<String, Object> reports = new HashMap<>();
+                reports.put("partyId", currentPartyId);
+                reports.put("total", total);
+                reports.put("delivered", delivered);
+                reports.put("inProcess", inProcess);
+                reports.put("failed", failed);
+                reports.put("sent", sent);
+
+                result.add(reports);
+            }
+        }else if (campaignId != null && routeId != null && partyId.equals(" ")) {
+            if (createdStartTime != null && createdEndTime != null) {
+                report = campaignReportRepositoryAdmin.campaignAndRouteWiseReports(campaignId,routeId, createdStartTime, createdEndTime);
+//                size = campaignReportRepositoryAdmin.countCampaignWithRoute(campaignId, routeId);
+            } else {
+                createdStartTime = LocalDateTime.of(1970, 1, 1, 0, 0, 0); // Default start date: January 1, 1970 00:00:00
+                createdEndTime = LocalDateTime.now(); // Default end date: Current date and time
+                report = campaignReportRepositoryAdmin.campaignAndRouteWiseReports(campaignId,routeId, createdStartTime, createdEndTime);
+//                size = campaignReportRepositoryAdmin.countCampaignWithRoute(campaignId, routeId);
+            }
+
+            for (Object[] row : report) {
+                String currentCampaignId = (row[0] != null) ? row[0].toString() : "null";
+                String currentRouteId = (row[1] != null) ? row[1].toString() : "null";
+                int total = (row[2] != null) ? Integer.parseInt(row[2].toString()) : 0;
+                int delivered = (row[3] != null) ? Integer.parseInt(row[3].toString()) : 0;
+                int inProcess = (row[4] != null) ? Integer.parseInt(row[4].toString()) : 0;
+                int failed = (row[5] != null) ? Integer.parseInt(row[5].toString()) : 0;
+                int sent = (row[6] != null) ? Integer.parseInt(row[6].toString()) : 0;
+
+                Map<String, Object> reports = new HashMap<>();
+                reports.put("campaignId", currentCampaignId);
+                reports.put("routeId", currentRouteId);
+                reports.put("total", total);
+                reports.put("delivered", delivered);
+                reports.put("inProcess", inProcess);
+                reports.put("failed", failed);
+                reports.put("sent", sent);
+
+                result.add(reports);
+            }
+        }else if (campaignId != null && partyId != null && routeId.equals(" ")) {
+            if (createdStartTime != null && createdEndTime != null) {
+                report = campaignReportRepositoryAdmin.campaignAndPartyWiseReports(campaignId,partyId, createdStartTime, createdEndTime);
+                size = campaignReportRepositoryAdmin.countAllCampaign(campaignId, partyId);
+            } else {
+                createdStartTime = LocalDateTime.of(1970, 1, 1, 0, 0, 0); // Default start date: January 1, 1970 00:00:00
+                createdEndTime = LocalDateTime.now(); // Default end date: Current date and time
+                report = campaignReportRepositoryAdmin.campaignAndPartyWiseReports(campaignId,partyId, createdStartTime, createdEndTime);
+                size = campaignReportRepositoryAdmin.countAllCampaign(campaignId, partyId);
+            }
+
+            for (Object[] row : report) {
+                String  currentPartyId= (row[0] != null) ? row[0].toString() : "null";
+                String currentCampaignId = (row[1] != null) ? row[1].toString() : "null";
+                int total = (row[2] != null) ? Integer.parseInt(row[2].toString()) : 0;
+                int delivered = (row[3] != null) ? Integer.parseInt(row[3].toString()) : 0;
+                int inProcess = (row[4] != null) ? Integer.parseInt(row[4].toString()) : 0;
+                int failed = (row[5] != null) ? Integer.parseInt(row[5].toString()) : 0;
+                int sent = (row[6] != null) ? Integer.parseInt(row[6].toString()) : 0;
+
+                Map<String, Object> reports = new HashMap<>();
+                reports.put("partyId", currentPartyId);
+                reports.put("campaignId", currentCampaignId);
+                reports.put("total", total);
+                reports.put("delivered", delivered);
+                reports.put("inProcess", inProcess);
+                reports.put("failed", failed);
+                reports.put("sent", sent);
+
+                result.add(reports);
+            }
+        }else if (partyId != null && routeId != null && campaignId.equals(" ")) {
+            if (createdStartTime != null && createdEndTime != null) {
+                report = campaignReportRepositoryAdmin.routeAndPartyWiseReports(routeId,partyId, createdStartTime, createdEndTime);
+//                size = campaignReportRepositoryAdmin.countAllParty(partyId);
+            } else {
+                createdStartTime = LocalDateTime.of(1970, 1, 1, 0, 0, 0); // Default start date: January 1, 1970 00:00:00
+                createdEndTime = LocalDateTime.now(); // Default end date: Current date and time
+                report = campaignReportRepositoryAdmin.routeAndPartyWiseReports(routeId,partyId, createdStartTime, createdEndTime);
+//                size = campaignReportRepositoryAdmin.countAllParty(partyId);
+            }
+
+            for (Object[] row : report) {
+                String  currentPartyId= (row[0] != null) ? row[0].toString() : "null";
+                String currentRouteId = (row[1] != null) ? row[1].toString() : "null";
+                int total = (row[2] != null) ? Integer.parseInt(row[2].toString()) : 0;
+                int delivered = (row[3] != null) ? Integer.parseInt(row[3].toString()) : 0;
+                int inProcess = (row[4] != null) ? Integer.parseInt(row[4].toString()) : 0;
+                int failed = (row[5] != null) ? Integer.parseInt(row[5].toString()) : 0;
+                int sent = (row[6] != null) ? Integer.parseInt(row[6].toString()) : 0;
+
+                Map<String, Object> reports = new HashMap<>();
+                reports.put("partyId", currentPartyId);
+                reports.put("routeId", currentRouteId);
+                reports.put("total", total);
+                reports.put("delivered", delivered);
+                reports.put("inProcess", inProcess);
+                reports.put("failed", failed);
+                reports.put("sent", sent);
+
+                result.add(reports);
+            }
+        }
+        Map<String, Object> responseMap = new HashMap<>();
+        responseMap.put("count", size);
+        responseMap.put("reports", result);
+
+
+// Return the JSON response
+        return responseMap;
+//        return result;
     }
-
 }
 

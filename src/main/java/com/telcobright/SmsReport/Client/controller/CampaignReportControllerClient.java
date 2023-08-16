@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -61,6 +63,175 @@ public class CampaignReportControllerClient {
         }
 
         return result;
+    }
+
+    @CrossOrigin(origins = "*")
+    @RequestMapping(
+            value = "/campaignRouteAndPartyWiseReports",
+            method = RequestMethod.POST,
+            consumes = {"application/json"},
+            produces = {"application/json"}
+    )
+    public Map<String, Object> campaignRouteAndPartyWiseReport(
+            @RequestBody Map<String, Object> payload,
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String token
+    ) {
+        String campaignId = (payload.get("campaignId") != null ? (String) payload.get("campaignId") : " ");
+        String routeId = (payload.get("routeId") != null ? (String) payload.get("routeId") : " ");
+        String partyId = (String) payload.get("partyId");
+        Integer page = (int) payload.getOrDefault("page", 1) - 1;
+        Integer limit = (int) payload.getOrDefault("limit", 10);
+        Integer offset = page * limit;
+
+        String startDate = (String) payload.get("createdOn_fld0_value");
+        String endDate = (String) payload.get("createdOn_fld1_value");
+        LocalDateTime createdStartTime = null;
+        LocalDateTime createdEndTime = null;
+
+        if (startDate != null && endDate != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            createdStartTime = LocalDateTime.parse(startDate, formatter);
+            createdEndTime = LocalDateTime.parse(endDate, formatter);
+        }
+
+        List<Object[]> report = new ArrayList<>();
+        Integer size = 0;
+        List<Map<String, Object>> result = new ArrayList<>();
+        if (campaignId == " " && routeId == " ") {
+            if (createdStartTime != null && createdEndTime != null) {
+                report = campaignReportRepository.campaignRouteAndPartyWiseReports(campaignId, routeId, partyId, createdStartTime, createdEndTime, limit, offset);
+                size = campaignReportRepository.countAllCampaign(campaignId, partyId);
+            } else {
+                createdStartTime = LocalDateTime.of(1970, 1, 1, 0, 0, 0); // Default start date: January 1, 1970 00:00:00
+                createdEndTime = LocalDateTime.now(); // Default end date: Current date and time
+                report = campaignReportRepository.campaignRouteAndPartyWiseReports(campaignId, routeId, partyId, createdStartTime, createdEndTime, limit, offset);
+                size = campaignReportRepository.countAllCampaign(campaignId, partyId);
+            }
+
+            for (Object[] row : report) {
+//                String currentPartyId = (row[0] != null) ? row[0].toString() : "null";
+                String currentCampaignId = (row[0] != null) ? row[0].toString() : "null";
+                String currentRouteId = (row[1] != null) ? row[1].toString() : "null";
+                int total = (row[2] != null) ? Integer.parseInt(row[2].toString()) : 0;
+                int delivered = (row[3] != null) ? Integer.parseInt(row[3].toString()) : 0;
+                int inProcess = (row[4] != null) ? Integer.parseInt(row[4].toString()) : 0;
+                int failed = (row[5] != null) ? Integer.parseInt(row[5].toString()) : 0;
+                int sent = (row[6] != null) ? Integer.parseInt(row[6].toString()) : 0;
+
+                Map<String, Object> reports = new HashMap<>();
+//                reports.put("partyId", currentPartyId);
+                reports.put("campaignId", currentCampaignId);
+                reports.put("routeId", currentRouteId);
+                reports.put("total", total);
+                reports.put("delivered", delivered);
+                reports.put("inProcess", inProcess);
+                reports.put("failed", failed);
+                reports.put("sent", sent);
+
+                result.add(reports);
+            }
+        }
+        else if (campaignId != " " && routeId != " ") {
+            if (createdStartTime != null && createdEndTime != null) {
+                report = campaignReportRepository.campaignRouteAndPartyWiseReports(campaignId, routeId, partyId, createdStartTime, createdEndTime, limit, offset);
+//                size = campaignReportRepository.countAllCampaign(campaignId,partyId);
+            } else {
+                createdStartTime = LocalDateTime.of(1970, 1, 1, 0, 0, 0); // Default start date: January 1, 1970 00:00:00
+                createdEndTime = LocalDateTime.now(); // Default end date: Current date and time
+                report = campaignReportRepository.campaignRouteAndPartyWiseReports(campaignId, routeId, partyId, createdStartTime, createdEndTime, limit, offset);
+//                size = campaignReportRepository.countAllCampaign(campaignId, partyId);
+            }
+
+            for (Object[] row : report) {
+//                String currentPartyId = (row[0] != null) ? row[0].toString() : "null";
+                String currentCampaignId = (row[0] != null) ? row[0].toString() : "null";
+                String currentRouteId = (row[1] != null) ? row[1].toString() : "null";
+                int total = (row[2] != null) ? Integer.parseInt(row[2].toString()) : 0;
+                int delivered = (row[3] != null) ? Integer.parseInt(row[3].toString()) : 0;
+                int inProcess = (row[4] != null) ? Integer.parseInt(row[4].toString()) : 0;
+                int failed = (row[5] != null) ? Integer.parseInt(row[5].toString()) : 0;
+                int sent = (row[6] != null) ? Integer.parseInt(row[6].toString()) : 0;
+
+                Map<String, Object> reports = new HashMap<>();
+//                reports.put("partyId", currentPartyId);
+                reports.put("campaignId", currentCampaignId);
+                reports.put("routeId", currentRouteId);
+                reports.put("total", total);
+                reports.put("delivered", delivered);
+                reports.put("inProcess", inProcess);
+                reports.put("failed", failed);
+                reports.put("sent", sent);
+
+                result.add(reports);
+            }
+        }
+        else if (campaignId != null && routeId.equals(" ")) {
+            if (createdStartTime != null && createdEndTime != null) {
+                report = campaignReportRepository.campaignWise(campaignId,partyId, createdStartTime, createdEndTime);
+//                size = campaignReportRepository.countAllCampaign(campaignId, partyId);
+            } else {
+                createdStartTime = LocalDateTime.of(1970, 1, 1, 0, 0, 0); // Default start date: January 1, 1970 00:00:00
+                createdEndTime = LocalDateTime.now(); // Default end date: Current date and time
+                report = campaignReportRepository.campaignWise(campaignId,partyId, createdStartTime, createdEndTime);
+//                size = campaignReportRepository.countAllCampaign(campaignId, partyId);
+            }
+
+            for (Object[] row : report) {
+                String currentCampaignId = (row[0] != null) ? row[0].toString() : "null";
+                int total = (row[1] != null) ? Integer.parseInt(row[1].toString()) : 0;
+                int delivered = (row[2] != null) ? Integer.parseInt(row[2].toString()) : 0;
+                int inProcess = (row[3] != null) ? Integer.parseInt(row[3].toString()) : 0;
+                int failed = (row[4] != null) ? Integer.parseInt(row[4].toString()) : 0;
+                int sent = (row[5] != null) ? Integer.parseInt(row[5].toString()) : 0;
+
+                Map<String, Object> reports = new HashMap<>();
+                reports.put("campaignId", currentCampaignId);
+                reports.put("total", total);
+                reports.put("delivered", delivered);
+                reports.put("inProcess", inProcess);
+                reports.put("failed", failed);
+                reports.put("sent", sent);
+
+                result.add(reports);
+            }
+        } else if (routeId != null && campaignId.equals(" ")) {
+            if (createdStartTime != null && createdEndTime != null) {
+                report = campaignReportRepository.routeWise(routeId, partyId, createdStartTime, createdEndTime);
+//                size = campaignReportRepository.countAllRoute(routeId);
+            } else {
+                createdStartTime = LocalDateTime.of(1970, 1, 1, 0, 0, 0); // Default start date: January 1, 1970 00:00:00
+                createdEndTime = LocalDateTime.now(); // Default end date: Current date and time
+                report = campaignReportRepository.routeWise(routeId, partyId, createdStartTime, createdEndTime);
+//                size = campaignReportRepository.countAllRoute(routeId);
+            }
+
+            for (Object[] row : report) {
+                String currentRouteId = (row[0] != null) ? row[0].toString() : "null";
+                int total = (row[1] != null) ? Integer.parseInt(row[1].toString()) : 0;
+                int delivered = (row[2] != null) ? Integer.parseInt(row[2].toString()) : 0;
+                int inProcess = (row[3] != null) ? Integer.parseInt(row[3].toString()) : 0;
+                int failed = (row[4] != null) ? Integer.parseInt(row[4].toString()) : 0;
+                int sent = (row[5] != null) ? Integer.parseInt(row[5].toString()) : 0;
+
+                Map<String, Object> reports = new HashMap<>();
+                reports.put("routeId", currentRouteId);
+                reports.put("total", total);
+                reports.put("inProcess", inProcess);
+                reports.put("delivered", delivered);
+                reports.put("failed", failed);
+                reports.put("sent", sent);
+
+                result.add(reports);
+            }
+        }
+        Map<String, Object> responseMap = new HashMap<>();
+        responseMap.put("count", size);
+        responseMap.put("reports", result);
+
+
+// Return the JSON response
+        return responseMap;
+//        return result;
     }
 
 }
