@@ -117,6 +117,8 @@ public class CampaignReportControllerClient {
                 int inProcess = (row[4] != null) ? Integer.parseInt(row[4].toString()) : 0;
                 int failed = (row[5] != null) ? Integer.parseInt(row[5].toString()) : 0;
                 int sent = (row[6] != null) ? Integer.parseInt(row[6].toString()) : 0;
+                int unidentifiedSubscriber = (row[7] != null) ? Integer.parseInt(row[7].toString()) : 0;
+                int absentSubscriberSM = (row[8] != null) ? Integer.parseInt(row[8].toString()) : 0;
 
                 Map<String, Object> reports = new HashMap<>();
 //                reports.put("partyId", currentPartyId);
@@ -125,8 +127,10 @@ public class CampaignReportControllerClient {
                 reports.put("total", total);
                 reports.put("delivered", delivered);
                 reports.put("inProcess", inProcess);
-                reports.put("failed", failed);
+//                reports.put("failed", failed);
                 reports.put("sent", sent);
+                reports.put("unidentifiedSubscriber", unidentifiedSubscriber);
+                reports.put("absentSubscriberSM", absentSubscriberSM);
 
                 result.add(reports);
             }
@@ -151,6 +155,8 @@ public class CampaignReportControllerClient {
                 int inProcess = (row[4] != null) ? Integer.parseInt(row[4].toString()) : 0;
                 int failed = (row[5] != null) ? Integer.parseInt(row[5].toString()) : 0;
                 int sent = (row[6] != null) ? Integer.parseInt(row[6].toString()) : 0;
+                int unidentifiedSubscriber = (row[7] != null) ? Integer.parseInt(row[7].toString()) : 0;
+                int absentSubscriberSM = (row[8] != null) ? Integer.parseInt(row[8].toString()) : 0;
 
                 Map<String, Object> reports = new HashMap<>();
 //                reports.put("partyId", currentPartyId);
@@ -159,8 +165,10 @@ public class CampaignReportControllerClient {
                 reports.put("total", total);
                 reports.put("delivered", delivered);
                 reports.put("inProcess", inProcess);
-                reports.put("failed", failed);
+//                reports.put("failed", failed);
                 reports.put("sent", sent);
+                reports.put("unidentifiedSubscriber", unidentifiedSubscriber);
+                reports.put("absentSubscriberSM", absentSubscriberSM);
 
                 result.add(reports);
             }
@@ -183,14 +191,18 @@ public class CampaignReportControllerClient {
                 int inProcess = (row[3] != null) ? Integer.parseInt(row[3].toString()) : 0;
                 int failed = (row[4] != null) ? Integer.parseInt(row[4].toString()) : 0;
                 int sent = (row[5] != null) ? Integer.parseInt(row[5].toString()) : 0;
+                int unidentifiedSubscriber = (row[6] != null) ? Integer.parseInt(row[6].toString()) : 0;
+                int absentSubscriberSM = (row[7] != null) ? Integer.parseInt(row[7].toString()) : 0;
 
                 Map<String, Object> reports = new HashMap<>();
                 reports.put("campaignId", currentCampaignId);
                 reports.put("total", total);
                 reports.put("delivered", delivered);
                 reports.put("inProcess", inProcess);
-                reports.put("failed", failed);
+//                reports.put("failed", failed);
                 reports.put("sent", sent);
+                reports.put("unidentifiedSubscriber", unidentifiedSubscriber);
+                reports.put("absentSubscriberSM", absentSubscriberSM);
 
                 result.add(reports);
             }
@@ -212,14 +224,18 @@ public class CampaignReportControllerClient {
                 int inProcess = (row[3] != null) ? Integer.parseInt(row[3].toString()) : 0;
                 int failed = (row[4] != null) ? Integer.parseInt(row[4].toString()) : 0;
                 int sent = (row[5] != null) ? Integer.parseInt(row[5].toString()) : 0;
+                int unidentifiedSubscriber = (row[6] != null) ? Integer.parseInt(row[6].toString()) : 0;
+                int absentSubscriberSM = (row[7] != null) ? Integer.parseInt(row[7].toString()) : 0;
 
                 Map<String, Object> reports = new HashMap<>();
                 reports.put("routeId", currentRouteId);
                 reports.put("total", total);
                 reports.put("inProcess", inProcess);
                 reports.put("delivered", delivered);
-                reports.put("failed", failed);
+//                reports.put("failed", failed);
                 reports.put("sent", sent);
+                reports.put("unidentifiedSubscriber", unidentifiedSubscriber);
+                reports.put("absentSubscriberSM", absentSubscriberSM);
 
                 result.add(reports);
             }
