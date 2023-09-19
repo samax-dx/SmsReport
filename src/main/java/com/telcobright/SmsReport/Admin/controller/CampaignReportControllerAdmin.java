@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @RestController
@@ -24,134 +25,6 @@ public class CampaignReportControllerAdmin {
         this.campaignReportRepositoryAdmin = campaignReportRepositoryAdmin;
     }
 
-
-//    @CrossOrigin(origins = "*")
-//    @RequestMapping(
-//            value = "/routeWise",
-//            method = RequestMethod.POST,
-//            consumes = {"application/json"},
-//            produces = {"application/json"}
-//    )
-//    public List<Map<String, Object>> routeWise(@RequestBody Map<String, Object> payload, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-//        String routeId = (payload.get("routeId") != null ? (String) payload.get("routeId") : " ");
-//        Integer page = (int) payload.getOrDefault("page", 1) - 1;
-//        Integer limit = (int) payload.getOrDefault("limit", 10);
-//
-//        List<Object[]> report = campaignReportRepositoryAdmin.routeWise(routeId, createdStartTime, createdEndTime);
-//
-//        List<Map<String, Object>> result = new ArrayList<>();
-//
-//        for (Object[] row : report) {
-//            String currentRouteId = (row[0] != null) ? row[0].toString() : "null";
-//            String total = String.valueOf(row[1]);
-//            String delivered = String.valueOf(row[2]);
-//            String inProcess = String.valueOf(row[3]);
-//            String failed = String.valueOf(row[4]);
-//
-//            Map<String, Object> routeData = new HashMap<>();
-//            routeData.put("routeId", currentRouteId);
-//            routeData.put("total", total);
-//            routeData.put("delivered", delivered);
-//            routeData.put("inProcess", inProcess);
-//            routeData.put("failed", failed);
-//
-//            result.add(routeData);
-//        }
-//
-//        return result;
-//    }
-
-
-//    @CrossOrigin(origins = "*")
-//    @RequestMapping(
-//            value = "/campaignAndRouteWiseReports",
-//            method = RequestMethod.POST,
-//            consumes = {"application/json"},
-//            produces = {"application/json"}
-//    )
-//    public Map<String, Map<String, Map<String, String>>> campaignAndRouteWiseReports(
-//            @RequestBody Map<String, Object> payload,
-//            @RequestHeader(HttpHeaders.AUTHORIZATION) String token
-//    ) {
-//        String campaignId = (payload.get("campaignId") != null ? (String) payload.get("campaignId") : " ");
-//        String routeId = (payload.get("routeId") != null ? (String) payload.get("routeId") : " ");
-//        Integer page = (int) payload.getOrDefault("page", 1) - 1;
-//        Integer limit = (int) payload.getOrDefault("limit", 10);
-//
-//        List<Object[]> report = campaignReportRepositoryAdmin.campaignAndRouteWiseReports(campaignId, routeId);
-//
-//        Map<String, Map<String, Map<String, String>>> result = new HashMap<>();
-//
-//        for (Object[] row : report) {
-//            String campaignIds = (row[0] != null) ? row[0].toString() : "null";
-//            String routeIds = (row[1] != null) ? row[1].toString() : "null";
-//            String total = String.valueOf(row[2]);
-//            String delivered = String.valueOf(row[3]);
-//            String inProcess = String.valueOf(row[4]);
-//            String failed = String.valueOf(row[5]);
-//
-//            Map<String, Map<String, String>> campaignData = result.getOrDefault(campaignIds, new HashMap<>());
-//
-//            Map<String, String> routeData = new HashMap<>();
-//            routeData.put("total", total);
-//            routeData.put("delivered", delivered);
-//            routeData.put("inProcess", inProcess);
-//            routeData.put("failed", failed);
-//
-//            campaignData.put(routeIds, routeData);
-//            result.put(campaignIds, campaignData);
-//        }
-//
-//        return result;
-//    }
-//
-////@CrossOrigin(origins = "*")
-////@RequestMapping(
-////        value = "/campaignRouteAndPartyWiseReports",
-////        method = RequestMethod.POST,
-////        consumes = {"application/json"},
-////        produces = {"application/json"}
-////)
-////public Map<String, Map<String, Map<String, Map<String, Integer>>>> campaignRouteAndPartyWiseReports(
-////        @RequestBody Map<String, Object> payload,
-////        @RequestHeader(HttpHeaders.AUTHORIZATION) String token
-////) {
-////    String campaignId = (payload.get("campaignId") != null ? (String) payload.get("campaignId") : " ");
-////    String routeId = (payload.get("routeId") != null ? (String) payload.get("routeId") : " ");
-////    String partyId = (payload.get("partyId") != null ? (String) payload.get("partyId") : " ");
-////    Integer page = (int) payload.getOrDefault("page", 1) - 1;
-////    Integer limit = (int) payload.getOrDefault("limit", 10);
-////
-////    List<Object[]> report = campaignReportRepository.campaignRouteAndPartyWiseReports(campaignId, routeId, partyId);
-////
-////    Map<String, Map<String, Map<String, Map<String, Integer>>>> result = new HashMap<>();
-////
-////    for (Object[] row : report) {
-////        String partyIdVal = (row[0] != null) ? row[0].toString() : "null";
-////        String campaignIds = (row[1] != null) ? row[1].toString() : "null";
-////        String routeIds = (row[2] != null) ? row[2].toString() : "null";
-////        int total = (row[3] != null) ? Integer.parseInt(row[3].toString()) : 0;
-////        int delivered = (row[4] != null) ? Integer.parseInt(row[4].toString()) : 0;
-////        int inProcess = (row[5] != null) ? Integer.parseInt(row[5].toString()) : 0;
-////        int failed = (row[6] != null) ? Integer.parseInt(row[6].toString()) : 0;
-////
-////        Map<String, Map<String, Map<String, Integer>>> partyData = result.getOrDefault(partyIdVal, new HashMap<>());
-////
-////        Map<String, Map<String, Integer>> campaignData = partyData.getOrDefault(campaignIds, new HashMap<>());
-////
-////        Map<String, Integer> routeData = new HashMap<>();
-////        routeData.put("total", total);
-////        routeData.put("inProcess", inProcess);
-////        routeData.put("delivered", delivered);
-////        routeData.put("failed", failed);
-////
-////        campaignData.put(routeIds, routeData);
-////        partyData.put(campaignIds, campaignData);
-////        result.put(partyIdVal, partyData);
-////    }
-////
-////    return result;
-////}
 
     @CrossOrigin(origins = "*")
     @RequestMapping(
@@ -190,8 +63,9 @@ public class CampaignReportControllerAdmin {
                 report = campaignReportRepositoryAdmin.campaignRouteAndPartyWiseReports(campaignId, routeId, partyId, createdStartTime, createdEndTime, limit, offset);
                 size = campaignReportRepositoryAdmin.countAllCampaign(campaignId, partyId);
             } else {
-                createdStartTime = LocalDateTime.of(1970, 1, 1, 0, 0, 0); // Default start date: January 1, 1970 00:00:00
-                createdEndTime = LocalDateTime.now(); // Default end date: Current date and time
+//                createdStartTime = LocalDateTime.of(1970, 1, 1, 0, 0, 0); // Default start date: January 1, 1970 00:00:00
+                createdEndTime = LocalDateTime.now();
+                createdStartTime = createdEndTime.minus(1, ChronoUnit.DAYS);
                 report = campaignReportRepositoryAdmin.campaignRouteAndPartyWiseReports(campaignId, routeId, partyId, createdStartTime, createdEndTime, limit, offset);
                 size = campaignReportRepositoryAdmin.countAllCampaign(campaignId, partyId);
             }
@@ -228,8 +102,8 @@ public class CampaignReportControllerAdmin {
                 report = campaignReportRepositoryAdmin.campaignRouteAndPartyWiseReports(campaignId, routeId, partyId, createdStartTime, createdEndTime, limit, offset);
 //                size = campaignReportRepositoryAdmin.countAllCampaign(campaignId,partyId);
             } else {
-                createdStartTime = LocalDateTime.of(1970, 1, 1, 0, 0, 0); // Default start date: January 1, 1970 00:00:00
-                createdEndTime = LocalDateTime.now(); // Default end date: Current date and time
+                createdEndTime = LocalDateTime.now();
+                createdStartTime = createdEndTime.minus(1, ChronoUnit.DAYS);
                 report = campaignReportRepositoryAdmin.campaignRouteAndPartyWiseReports(campaignId, routeId, partyId, createdStartTime, createdEndTime, limit, offset);
 //                size = campaignReportRepositoryAdmin.countAllCampaign(campaignId, partyId);
             }
@@ -266,8 +140,8 @@ public class CampaignReportControllerAdmin {
                 report = campaignReportRepositoryAdmin.campaignWise(campaignId, createdStartTime, createdEndTime);
 //                size = campaignReportRepositoryAdmin.countAllCampaign(campaignId, partyId);
             } else {
-                createdStartTime = LocalDateTime.of(1970, 1, 1, 0, 0, 0); // Default start date: January 1, 1970 00:00:00
-                createdEndTime = LocalDateTime.now(); // Default end date: Current date and time
+                createdEndTime = LocalDateTime.now();
+                createdStartTime = createdEndTime.minus(1, ChronoUnit.DAYS);
                 report = campaignReportRepositoryAdmin.campaignWise(campaignId, createdStartTime, createdEndTime);
 //                size = campaignReportRepositoryAdmin.countAllCampaign(campaignId, partyId);
             }
@@ -299,8 +173,8 @@ public class CampaignReportControllerAdmin {
                 report = campaignReportRepositoryAdmin.routeWise(routeId, createdStartTime, createdEndTime);
 //                size = campaignReportRepositoryAdmin.countAllRoute(routeId);
             } else {
-                createdStartTime = LocalDateTime.of(1970, 1, 1, 0, 0, 0); // Default start date: January 1, 1970 00:00:00
-                createdEndTime = LocalDateTime.now(); // Default end date: Current date and time
+                createdEndTime = LocalDateTime.now();
+                createdStartTime = createdEndTime.minus(1, ChronoUnit.DAYS);
                 report = campaignReportRepositoryAdmin.routeWise(routeId, createdStartTime, createdEndTime);
 //                size = campaignReportRepositoryAdmin.countAllRoute(routeId);
             }
@@ -332,8 +206,8 @@ public class CampaignReportControllerAdmin {
                 report = campaignReportRepositoryAdmin.partyWise(partyId, createdStartTime, createdEndTime);
 //                size = campaignReportRepositoryAdmin.countAllParty(partyId);
             } else {
-                createdStartTime = LocalDateTime.of(1970, 1, 1, 0, 0, 0); // Default start date: January 1, 1970 00:00:00
-                createdEndTime = LocalDateTime.now(); // Default end date: Current date and time
+                createdEndTime = LocalDateTime.now();
+                createdStartTime = createdEndTime.minus(1, ChronoUnit.DAYS);
                 report = campaignReportRepositoryAdmin.partyWise(partyId, createdStartTime, createdEndTime);
 //                size = campaignReportRepositoryAdmin.countAllParty(partyId);
             }
@@ -365,8 +239,8 @@ public class CampaignReportControllerAdmin {
                 report = campaignReportRepositoryAdmin.campaignAndRouteWiseReports(campaignId,routeId, createdStartTime, createdEndTime);
 //                size = campaignReportRepositoryAdmin.countCampaignWithRoute(campaignId, routeId);
             } else {
-                createdStartTime = LocalDateTime.of(1970, 1, 1, 0, 0, 0); // Default start date: January 1, 1970 00:00:00
-                createdEndTime = LocalDateTime.now(); // Default end date: Current date and time
+                createdEndTime = LocalDateTime.now();
+                createdStartTime = createdEndTime.minus(1, ChronoUnit.DAYS);
                 report = campaignReportRepositoryAdmin.campaignAndRouteWiseReports(campaignId,routeId, createdStartTime, createdEndTime);
 //                size = campaignReportRepositoryAdmin.countCampaignWithRoute(campaignId, routeId);
             }
@@ -400,8 +274,8 @@ public class CampaignReportControllerAdmin {
                 report = campaignReportRepositoryAdmin.campaignAndPartyWiseReports(campaignId,partyId, createdStartTime, createdEndTime);
                 size = campaignReportRepositoryAdmin.countAllCampaign(campaignId, partyId);
             } else {
-                createdStartTime = LocalDateTime.of(1970, 1, 1, 0, 0, 0); // Default start date: January 1, 1970 00:00:00
-                createdEndTime = LocalDateTime.now(); // Default end date: Current date and time
+                createdEndTime = LocalDateTime.now();
+                createdStartTime = createdEndTime.minus(1, ChronoUnit.DAYS);
                 report = campaignReportRepositoryAdmin.campaignAndPartyWiseReports(campaignId,partyId, createdStartTime, createdEndTime);
                 size = campaignReportRepositoryAdmin.countAllCampaign(campaignId, partyId);
             }
@@ -435,8 +309,8 @@ public class CampaignReportControllerAdmin {
                 report = campaignReportRepositoryAdmin.routeAndPartyWiseReports(routeId,partyId, createdStartTime, createdEndTime);
 //                size = campaignReportRepositoryAdmin.countAllParty(partyId);
             } else {
-                createdStartTime = LocalDateTime.of(1970, 1, 1, 0, 0, 0); // Default start date: January 1, 1970 00:00:00
-                createdEndTime = LocalDateTime.now(); // Default end date: Current date and time
+                createdEndTime = LocalDateTime.now();
+                createdStartTime = createdEndTime.minus(1, ChronoUnit.DAYS);
                 report = campaignReportRepositoryAdmin.routeAndPartyWiseReports(routeId,partyId, createdStartTime, createdEndTime);
 //                size = campaignReportRepositoryAdmin.countAllParty(partyId);
             }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -102,8 +103,9 @@ public class CampaignReportControllerClient {
                 report = campaignReportRepository.campaignRouteAndPartyWiseReports(campaignId, routeId, partyId, createdStartTime, createdEndTime, limit, offset);
                 size = campaignReportRepository.countAllCampaign(campaignId, partyId);
             } else {
-                createdStartTime = LocalDateTime.of(1970, 1, 1, 0, 0, 0); // Default start date: January 1, 1970 00:00:00
-                createdEndTime = LocalDateTime.now(); // Default end date: Current date and time
+//                createdStartTime = LocalDateTime.of(1970, 1, 1, 0, 0, 0); // Default start date: January 1, 1970 00:00:00
+                createdEndTime = LocalDateTime.now();
+                createdStartTime = createdEndTime.minus(1, ChronoUnit.DAYS);
                 report = campaignReportRepository.campaignRouteAndPartyWiseReports(campaignId, routeId, partyId, createdStartTime, createdEndTime, limit, offset);
                 size = campaignReportRepository.countAllCampaign(campaignId, partyId);
             }
@@ -140,8 +142,8 @@ public class CampaignReportControllerClient {
                 report = campaignReportRepository.campaignRouteAndPartyWiseReports(campaignId, routeId, partyId, createdStartTime, createdEndTime, limit, offset);
 //                size = campaignReportRepository.countAllCampaign(campaignId,partyId);
             } else {
-                createdStartTime = LocalDateTime.of(1970, 1, 1, 0, 0, 0); // Default start date: January 1, 1970 00:00:00
-                createdEndTime = LocalDateTime.now(); // Default end date: Current date and time
+                createdEndTime = LocalDateTime.now();
+                createdStartTime = createdEndTime.minus(1, ChronoUnit.DAYS);
                 report = campaignReportRepository.campaignRouteAndPartyWiseReports(campaignId, routeId, partyId, createdStartTime, createdEndTime, limit, offset);
 //                size = campaignReportRepository.countAllCampaign(campaignId, partyId);
             }
@@ -178,8 +180,8 @@ public class CampaignReportControllerClient {
                 report = campaignReportRepository.campaignWise(campaignId,partyId, createdStartTime, createdEndTime);
 //                size = campaignReportRepository.countAllCampaign(campaignId, partyId);
             } else {
-                createdStartTime = LocalDateTime.of(1970, 1, 1, 0, 0, 0); // Default start date: January 1, 1970 00:00:00
-                createdEndTime = LocalDateTime.now(); // Default end date: Current date and time
+                createdEndTime = LocalDateTime.now();
+                createdStartTime = createdEndTime.minus(1, ChronoUnit.DAYS);
                 report = campaignReportRepository.campaignWise(campaignId,partyId, createdStartTime, createdEndTime);
 //                size = campaignReportRepository.countAllCampaign(campaignId, partyId);
             }
@@ -211,8 +213,8 @@ public class CampaignReportControllerClient {
                 report = campaignReportRepository.routeWise(routeId, partyId, createdStartTime, createdEndTime);
 //                size = campaignReportRepository.countAllRoute(routeId);
             } else {
-                createdStartTime = LocalDateTime.of(1970, 1, 1, 0, 0, 0); // Default start date: January 1, 1970 00:00:00
-                createdEndTime = LocalDateTime.now(); // Default end date: Current date and time
+                createdEndTime = LocalDateTime.now();
+                createdStartTime = createdEndTime.minus(1, ChronoUnit.DAYS);
                 report = campaignReportRepository.routeWise(routeId, partyId, createdStartTime, createdEndTime);
 //                size = campaignReportRepository.countAllRoute(routeId);
             }
