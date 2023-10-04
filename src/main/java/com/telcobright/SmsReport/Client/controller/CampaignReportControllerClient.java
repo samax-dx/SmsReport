@@ -12,10 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/client/reports")
@@ -52,7 +49,7 @@ public class CampaignReportControllerClient {
             String absentSubscriberSM = String.valueOf(row[5]);
             String unidentifiedSubscriber = String.valueOf(row[6]);
 
-            Map<String, String> campaignData = new HashMap<>();
+            Map<String, String> campaignData = new LinkedHashMap<>();
             campaignData.put("total", total);
             campaignData.put("sent", sent);
             campaignData.put("delivered", delivered);
@@ -104,8 +101,8 @@ public class CampaignReportControllerClient {
                 size = campaignReportRepository.countAllCampaign(campaignId, partyId);
             } else {
 //                createdStartTime = LocalDateTime.of(1970, 1, 1, 0, 0, 0); // Default start date: January 1, 1970 00:00:00
+                createdStartTime = LocalDateTime.of(1970, 1, 1, 0, 0, 0);
                 createdEndTime = LocalDateTime.now();
-                createdStartTime = createdEndTime.minus(1, ChronoUnit.DAYS);
                 report = campaignReportRepository.campaignRouteAndPartyWiseReports(campaignId, routeId, partyId, createdStartTime, createdEndTime, limit, offset);
                 size = campaignReportRepository.countAllCampaign(campaignId, partyId);
             }
@@ -122,15 +119,15 @@ public class CampaignReportControllerClient {
                 int unidentifiedSubscriber = (row[7] != null) ? Integer.parseInt(row[7].toString()) : 0;
                 int absentSubscriberSM = (row[8] != null) ? Integer.parseInt(row[8].toString()) : 0;
 
-                Map<String, Object> reports = new HashMap<>();
+                Map<String, Object> reports = new LinkedHashMap<>();
 //                reports.put("partyId", currentPartyId);
                 reports.put("campaignId", currentCampaignId);
                 reports.put("routeId", currentRouteId);
                 reports.put("total", total);
+                reports.put("sent", sent);
                 reports.put("delivered", delivered);
                 reports.put("inProcess", inProcess);
 //                reports.put("failed", failed);
-                reports.put("sent", sent);
                 reports.put("unidentifiedSubscriber", unidentifiedSubscriber);
                 reports.put("absentSubscriberSM", absentSubscriberSM);
 
@@ -142,8 +139,8 @@ public class CampaignReportControllerClient {
                 report = campaignReportRepository.campaignRouteAndPartyWiseReports(campaignId, routeId, partyId, createdStartTime, createdEndTime, limit, offset);
 //                size = campaignReportRepository.countAllCampaign(campaignId,partyId);
             } else {
+                createdStartTime = LocalDateTime.of(1970, 1, 1, 0, 0, 0);
                 createdEndTime = LocalDateTime.now();
-                createdStartTime = createdEndTime.minus(1, ChronoUnit.DAYS);
                 report = campaignReportRepository.campaignRouteAndPartyWiseReports(campaignId, routeId, partyId, createdStartTime, createdEndTime, limit, offset);
 //                size = campaignReportRepository.countAllCampaign(campaignId, partyId);
             }
@@ -160,15 +157,15 @@ public class CampaignReportControllerClient {
                 int unidentifiedSubscriber = (row[7] != null) ? Integer.parseInt(row[7].toString()) : 0;
                 int absentSubscriberSM = (row[8] != null) ? Integer.parseInt(row[8].toString()) : 0;
 
-                Map<String, Object> reports = new HashMap<>();
+                Map<String, Object> reports = new LinkedHashMap<>();
 //                reports.put("partyId", currentPartyId);
                 reports.put("campaignId", currentCampaignId);
                 reports.put("routeId", currentRouteId);
                 reports.put("total", total);
+                reports.put("sent", sent);
                 reports.put("delivered", delivered);
                 reports.put("inProcess", inProcess);
 //                reports.put("failed", failed);
-                reports.put("sent", sent);
                 reports.put("unidentifiedSubscriber", unidentifiedSubscriber);
                 reports.put("absentSubscriberSM", absentSubscriberSM);
 
@@ -180,8 +177,8 @@ public class CampaignReportControllerClient {
                 report = campaignReportRepository.campaignWise(campaignId,partyId, createdStartTime, createdEndTime);
 //                size = campaignReportRepository.countAllCampaign(campaignId, partyId);
             } else {
+                createdStartTime = LocalDateTime.of(1970, 1, 1, 0, 0, 0);
                 createdEndTime = LocalDateTime.now();
-                createdStartTime = createdEndTime.minus(1, ChronoUnit.DAYS);
                 report = campaignReportRepository.campaignWise(campaignId,partyId, createdStartTime, createdEndTime);
 //                size = campaignReportRepository.countAllCampaign(campaignId, partyId);
             }
@@ -196,13 +193,13 @@ public class CampaignReportControllerClient {
                 int unidentifiedSubscriber = (row[6] != null) ? Integer.parseInt(row[6].toString()) : 0;
                 int absentSubscriberSM = (row[7] != null) ? Integer.parseInt(row[7].toString()) : 0;
 
-                Map<String, Object> reports = new HashMap<>();
+                Map<String, Object> reports = new LinkedHashMap<>();
                 reports.put("campaignId", currentCampaignId);
                 reports.put("total", total);
+                reports.put("sent", sent);
                 reports.put("delivered", delivered);
                 reports.put("inProcess", inProcess);
 //                reports.put("failed", failed);
-                reports.put("sent", sent);
                 reports.put("unidentifiedSubscriber", unidentifiedSubscriber);
                 reports.put("absentSubscriberSM", absentSubscriberSM);
 
@@ -213,8 +210,8 @@ public class CampaignReportControllerClient {
                 report = campaignReportRepository.routeWise(routeId, partyId, createdStartTime, createdEndTime);
 //                size = campaignReportRepository.countAllRoute(routeId);
             } else {
+                createdStartTime = LocalDateTime.of(1970, 1, 1, 0, 0, 0);
                 createdEndTime = LocalDateTime.now();
-                createdStartTime = createdEndTime.minus(1, ChronoUnit.DAYS);
                 report = campaignReportRepository.routeWise(routeId, partyId, createdStartTime, createdEndTime);
 //                size = campaignReportRepository.countAllRoute(routeId);
             }
@@ -229,13 +226,13 @@ public class CampaignReportControllerClient {
                 int unidentifiedSubscriber = (row[6] != null) ? Integer.parseInt(row[6].toString()) : 0;
                 int absentSubscriberSM = (row[7] != null) ? Integer.parseInt(row[7].toString()) : 0;
 
-                Map<String, Object> reports = new HashMap<>();
+                Map<String, Object> reports = new LinkedHashMap<>();
                 reports.put("routeId", currentRouteId);
                 reports.put("total", total);
-                reports.put("inProcess", inProcess);
-                reports.put("delivered", delivered);
-//                reports.put("failed", failed);
                 reports.put("sent", sent);
+                reports.put("delivered", delivered);
+                reports.put("inProcess", inProcess);
+//                reports.put("failed", failed);
                 reports.put("unidentifiedSubscriber", unidentifiedSubscriber);
                 reports.put("absentSubscriberSM", absentSubscriberSM);
 
